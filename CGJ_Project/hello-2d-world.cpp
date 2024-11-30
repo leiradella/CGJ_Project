@@ -34,9 +34,9 @@ class MyApp : public mgl::App {
 
   void createShaderProgram();
   void createBufferObjects();
-  void addBufferTriangle(int i);
-  void addBufferSquare(int i);
-  void addBufferParallelogram(int i);
+  void addBufferTriangle(int i, float r, float g, float b, float a);
+  void addBufferSquare(int i, float r, float g, float b, float a);
+  void addBufferParallelogram(int i, float r, float g, float b, float a);
   void destroyBufferObjects();
   void drawScene();
 };
@@ -61,58 +61,62 @@ void MyApp::createShaderProgram() {
 
 typedef struct {
   GLfloat XYZW[4];
-  GLfloat RGBA[4];
 } Vertex;
 
 const Vertex triangleVertex[] = {
-    {{0.0f, 0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},   //0
-    {{0.5f, 0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},   //1
-    {{0.0f, 0.5f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}}};  //2
+    {{0.0f, 0.0f, 0.0f, 1.0f}},   //0
+    {{0.5f, 0.0f, 0.0f, 1.0f}},   //1
+    {{0.0f, 0.5f, 0.0f, 1.0f}}};  //2
 
 const GLubyte triangleIndices[] = { 0, 1, 2 };
 
 const Vertex squareVertex[] = {
-    {{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},   //0
-    {{0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},   //1
-    {{0.5f, 0.5f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},   //2
-	{{0.0f, 0.5f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}}};  //3
+    {{0.0f, 0.0f, 0.0f, 1.0f}},   //0
+    {{0.5f, 0.0f, 0.0f, 1.0f}},   //1
+    {{0.5f, 0.5f, 0.0f, 1.0f}},   //2
+	{{0.0f, 0.5f, 0.0f, 1.0f}}};  //3
 
 const GLubyte squareIndices[] = { 0, 1, 2, 0, 2, 3};
 
 const Vertex parallelogramVertex[] = {
-    {{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},   //0
-    {{0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},   //1
-    {{1.0f, 0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},   //2
-	{{0.5f, 0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}}};  //3
+    {{0.0f, 0.0f, 0.0f, 1.0f}},   //0
+    {{0.5f, 0.0f, 0.0f, 1.0f}},   //1
+    {{1.0f, 0.5f, 0.0f, 1.0f}},   //2
+	{{0.5f, 0.5f, 0.0f, 1.0f}}};  //3
 
 const GLubyte parallelogramIndices[] = { 0, 1, 2, 0, 2, 3};
 
 void MyApp::createBufferObjects() {
   glGenVertexArrays(3, VaoId);
-  addBufferTriangle(0);
-  addBufferSquare(1);
-  addBufferParallelogram(2);
+  addBufferTriangle(0, 1.0f, 1.0f, 0.0f, 1.0f);
+  addBufferSquare(1, 0.0f, 1.0f, 1.0f, 1.0f);
+  addBufferParallelogram(2, 1.0f, 0.0f, 1.0f, 1.0f);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glDeleteBuffers(2, VboId);
 }
 
-void MyApp::addBufferTriangle(int i) {
+void MyApp::addBufferTriangle(int i, float r, float g, float b, float a) {
+    GLfloat rgba[] = {r, g, b, a};
     glBindVertexArray(VaoId[i]);
     {
         glGenBuffers(2, VboId);
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertex), triangleVertex, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertex) + sizeof(rgba) * 3, NULL, GL_STATIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(triangleVertex), triangleVertex);
+            for (int i = 0; i < 3; i++) {
+                glBufferSubData(GL_ARRAY_BUFFER, sizeof(triangleVertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
+            }
             glEnableVertexAttribArray(POSITION);
-            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
                 reinterpret_cast<GLvoid*>(0));
             glEnableVertexAttribArray(COLOR);
             glVertexAttribPointer(
-                COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                reinterpret_cast<GLvoid*>(sizeof(triangleVertex[0].XYZW)));
+                COLOR, 4, GL_FLOAT, GL_FALSE, 0,
+                reinterpret_cast<GLvoid*>(sizeof(triangleVertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
@@ -122,21 +126,26 @@ void MyApp::addBufferTriangle(int i) {
     }
 }
 
-void MyApp::addBufferSquare(int i) {
+void MyApp::addBufferSquare(int i, float r, float g, float b, float a) {
+    GLfloat rgba[] = { r, g, b, a };
     glBindVertexArray(VaoId[i]);
     {
         glGenBuffers(2, VboId);
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertex), squareVertex, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertex) + sizeof(rgba) * 4, NULL, GL_STATIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(squareVertex), squareVertex);
+            for (int i = 0; i < 4; i++) {
+                glBufferSubData(GL_ARRAY_BUFFER, sizeof(squareVertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
+            }
             glEnableVertexAttribArray(POSITION);
-            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
                 reinterpret_cast<GLvoid*>(0));
             glEnableVertexAttribArray(COLOR);
             glVertexAttribPointer(
-                COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                reinterpret_cast<GLvoid*>(sizeof(squareVertex[0].XYZW)));
+                COLOR, 4, GL_FLOAT, GL_FALSE, 0,
+                reinterpret_cast<GLvoid*>(sizeof(squareVertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
@@ -146,21 +155,26 @@ void MyApp::addBufferSquare(int i) {
     }
 }
 
-void MyApp::addBufferParallelogram(int i) {
+void MyApp::addBufferParallelogram(int i, float r, float g, float b, float a) {
+    GLfloat rgba[] = { r, g, b, a };
     glBindVertexArray(VaoId[i]);
     {
         glGenBuffers(2, VboId);
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogramVertex), parallelogramVertex, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogramVertex) + sizeof(rgba) * 4, NULL, GL_STATIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(parallelogramVertex), parallelogramVertex);
+            for (int i = 0; i < 4; i++) {
+                glBufferSubData(GL_ARRAY_BUFFER, sizeof(parallelogramVertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
+            }
             glEnableVertexAttribArray(POSITION);
-            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
                 reinterpret_cast<GLvoid*>(0));
             glEnableVertexAttribArray(COLOR);
             glVertexAttribPointer(
-                COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                reinterpret_cast<GLvoid*>(sizeof(parallelogramVertex[0].XYZW)));
+                COLOR, 4, GL_FLOAT, GL_FALSE, 0,
+                reinterpret_cast<GLvoid*>(sizeof(parallelogramVertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
