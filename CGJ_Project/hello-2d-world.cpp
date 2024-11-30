@@ -34,6 +34,9 @@ class MyApp : public mgl::App {
 
   void createShaderProgram();
   void createBufferObjects();
+  void addBufferTriangle(int i);
+  void addBufferSquare(int i);
+  void addBufferParallelogram(int i);
   void destroyBufferObjects();
   void drawScene();
 };
@@ -86,73 +89,85 @@ const GLubyte parallelogramIndices[] = { 0, 1, 2, 0, 2, 3};
 
 void MyApp::createBufferObjects() {
   glGenVertexArrays(3, VaoId);
-  glBindVertexArray(VaoId[0]);
-  {
-    glGenBuffers(2, VboId);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-    {
-      glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertex), triangleVertex, GL_STATIC_DRAW);
-      glEnableVertexAttribArray(POSITION);
-      glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                            reinterpret_cast<GLvoid *>(0));
-      glEnableVertexAttribArray(COLOR);
-      glVertexAttribPointer(
-          COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-          reinterpret_cast<GLvoid *>(sizeof(triangleVertex[0].XYZW)));
-    }
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-    {
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangleIndices), triangleIndices,
-                   GL_STATIC_DRAW);
-    }
-  }
-  glBindVertexArray(VaoId[1]);
-  {
-      glGenBuffers(2, VboId);
-
-      glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-      {
-          glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertex), squareVertex, GL_STATIC_DRAW);
-          glEnableVertexAttribArray(POSITION);
-          glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-              reinterpret_cast<GLvoid*>(0));
-          glEnableVertexAttribArray(COLOR);
-          glVertexAttribPointer(
-              COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-              reinterpret_cast<GLvoid*>(sizeof(squareVertex[0].XYZW)));
-      }
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-      {
-          glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices,
-              GL_STATIC_DRAW);
-      }
-  }
-  glBindVertexArray(VaoId[2]);
-  {
-	  glGenBuffers(2, VboId);
-
-	  glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-	  {
-		  glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogramVertex), parallelogramVertex, GL_STATIC_DRAW);
-		  glEnableVertexAttribArray(POSITION);
-		  glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			  reinterpret_cast<GLvoid*>(0));
-		  glEnableVertexAttribArray(COLOR);
-		  glVertexAttribPointer(
-			  COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			  reinterpret_cast<GLvoid*>(sizeof(parallelogramVertex[0].XYZW)));
-	  }
-	  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-	  {
-		  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(parallelogramIndices), parallelogramIndices,
-			  GL_STATIC_DRAW);
-	  }
-  }
+  addBufferTriangle(0);
+  addBufferSquare(1);
+  addBufferParallelogram(2);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glDeleteBuffers(2, VboId);
+}
+
+void MyApp::addBufferTriangle(int i) {
+    glBindVertexArray(VaoId[i]);
+    {
+        glGenBuffers(2, VboId);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+        {
+            glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertex), triangleVertex, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(POSITION);
+            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                reinterpret_cast<GLvoid*>(0));
+            glEnableVertexAttribArray(COLOR);
+            glVertexAttribPointer(
+                COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                reinterpret_cast<GLvoid*>(sizeof(triangleVertex[0].XYZW)));
+        }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
+        {
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangleIndices), triangleIndices,
+                GL_STATIC_DRAW);
+        }
+    }
+}
+
+void MyApp::addBufferSquare(int i) {
+    glBindVertexArray(VaoId[i]);
+    {
+        glGenBuffers(2, VboId);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+        {
+            glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertex), squareVertex, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(POSITION);
+            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                reinterpret_cast<GLvoid*>(0));
+            glEnableVertexAttribArray(COLOR);
+            glVertexAttribPointer(
+                COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                reinterpret_cast<GLvoid*>(sizeof(squareVertex[0].XYZW)));
+        }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
+        {
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices,
+                GL_STATIC_DRAW);
+        }
+    }
+}
+
+void MyApp::addBufferParallelogram(int i) {
+    glBindVertexArray(VaoId[i]);
+    {
+        glGenBuffers(2, VboId);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+        {
+            glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogramVertex), parallelogramVertex, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(POSITION);
+            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                reinterpret_cast<GLvoid*>(0));
+            glEnableVertexAttribArray(COLOR);
+            glVertexAttribPointer(
+                COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                reinterpret_cast<GLvoid*>(sizeof(parallelogramVertex[0].XYZW)));
+        }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
+        {
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(parallelogramIndices), parallelogramIndices,
+                GL_STATIC_DRAW);
+        }
+    }
 }
 
 void MyApp::destroyBufferObjects() {
@@ -169,7 +184,7 @@ void MyApp::destroyBufferObjects() {
 
 const glm::mat4 I(1.0f);
 const glm::mat4 parallelogram = glm::rotate(glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-const glm::mat4 triangle = glm::translate(glm::vec3(-1.0f, -1.0f, 0.0f));
+const glm::mat4 triangle = glm::translate(glm::vec3(-0.75f, -0.75f, 0.0f));
 
 void MyApp::drawScene() {
   // Drawing directly in clip space
