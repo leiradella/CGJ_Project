@@ -14,6 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 #include <memory>
+#include <math.h>
 
 #include "../mgl/mgl.hpp"
 
@@ -200,16 +201,24 @@ void MyApp::destroyBufferObjects() {
 
 ////////////////////////////////////////////////////////////////////////// SCENE
 
-const glm::mat4 m1 = glm::translate(glm::vec3(0.5f, 0.5f, 0.0f))
+const glm::mat4 m1 = glm::translate(glm::vec3(-(0.5 - (0.25 * sqrt(2)) / 2), -(sqrt(pow(0.5, 2) / 2) + sqrt(pow(0.25, 2) / 2)), 0.0f))
+                    * glm::scale(glm::vec3(0.5f, 0.5f, 1.0f))
                     * glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-const glm::mat4 m2 = glm::translate(glm::vec3(0.5f, -0.5f, 0.0f))
+const glm::mat4 m2 = glm::translate(glm::vec3(-0.5f, 0.0f, 0.0f))
+                    * glm::scale(glm::vec3(1.0f, 1.0f, 1.0f))
                     * glm::rotate(glm::radians(-135.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-const glm::mat4 m3 = glm::rotate(glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));    
-const glm::mat4 m4 = glm::rotate(glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-const glm::mat4 m5 = glm::translate(glm::vec3(-1.0f, 0.0f, 0.0f))
+const glm::mat4 m3 = glm::scale(glm::vec3(1.0f, 1.0f, 1.0f))
+                    * glm::rotate(glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+const glm::mat4 m4 = glm::translate(glm::vec3(0.07f, 0.0f, 0.0f))
+                    * glm::scale(glm::vec3(0.5f, 0.5f, 1.0f))
+                    * glm::rotate(glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+const glm::mat4 m5 = glm::translate(glm::vec3(0.5f, -0.32f, 0.0f))
+                    * glm::scale(glm::vec3(sqrt(2) * 0.5, sqrt(2) * 0.5, 1.0f))
                     * glm::rotate(glm::radians(-45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-const glm::mat4 m6 = glm::translate(glm::vec3(-1.0f, -1.0f, 0.0f));
-const glm::mat4 m7 = glm::translate(glm::vec3(-0.5f, 0.0f, 0.0f))
+const glm::mat4 m6 = glm::translate(glm::vec3(0.0f, -0.25f, 0.0f))
+                    * glm::scale(glm::vec3(0.5f, 0.5f, 1.0f));
+const glm::mat4 m7 = glm::translate(glm::vec3(0.25f, 0.0f, 0.0f))
+                    * glm::scale(glm::vec3(0.5f, 0.5f, 1.0f))
                     * glm::rotate(glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
 void MyApp::drawScene() {
