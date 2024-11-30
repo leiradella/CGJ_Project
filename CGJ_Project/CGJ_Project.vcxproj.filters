@@ -13,36 +13,53 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="mgl">
+      <UniqueIdentifier>{619b6007-f509-4846-a39e-c40f8da73455}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mgl\mglShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mgl\mglApp.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\mgl\mglCamera.cpp">
+      <Filter>mgl</Filter>
     </ClCompile>
     <ClCompile Include="..\mgl\mglError.cpp">
+      <Filter>mgl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mgl\mglShader.cpp">
+      <Filter>mgl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mgl\mglApp.cpp">
+      <Filter>mgl</Filter>
+    </ClCompile>
+    <ClCompile Include="hello-2d-world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\mgl\mgl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\mgl\mglApp.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>mgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mgl\mglCamera.hpp">
+      <Filter>mgl</Filter>
     </ClInclude>
     <ClInclude Include="..\mgl\mglConventions.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>mgl</Filter>
     </ClInclude>
     <ClInclude Include="..\mgl\mglError.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>mgl</Filter>
     </ClInclude>
     <ClInclude Include="..\mgl\mglShader.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>mgl</Filter>
     </ClInclude>
+    <ClInclude Include="..\mgl\mgl.hpp">
+      <Filter>mgl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="clip-fs.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="clip-vs.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
