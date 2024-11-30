@@ -14,7 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 #include <memory>
-#include <math.h>
+#include <cmath>
 
 #include "../mgl/mgl.hpp"
 
