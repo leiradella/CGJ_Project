@@ -33,12 +33,13 @@ class MyApp : public mgl::App {
   GLuint VaoId[7], VboId[2];
   std::unique_ptr<mgl::ShaderProgram> Shaders;
   GLint MatrixId;
+  GLint ColorId;
 
   void createShaderProgram();
   void createBufferObjects();
-  void addBufferTriangle(int i, float r, float g, float b, float a);
-  void addBufferSquare(int i, float r, float g, float b, float a);
-  void addBufferParallelogram(int i, float r, float g, float b, float a);
+  void addBufferTriangle(int i);
+  void addBufferSquare(int i);
+  void addBufferParallelogram(int i);
   void destroyBufferObjects();
   void drawScene();
 };
@@ -53,50 +54,39 @@ void MyApp::createShaderProgram() {
   Shaders->addAttribute(mgl::POSITION_ATTRIBUTE, POSITION);
   Shaders->addAttribute(mgl::COLOR_ATTRIBUTE, COLOR);
   Shaders->addUniform("Matrix");
+  Shaders->addUniform("Color");
 
   Shaders->create();
 
   MatrixId = Shaders->Uniforms["Matrix"].index;
+  ColorId = Shaders->Uniforms["Color"].index;
 }
 
 //////////////////////////////////////////////////////////////////// VAOs & VBOs
 
 void MyApp::createBufferObjects() {
-    glGenVertexArrays(7, VaoId);
-    addBufferTriangle(0, 0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f);
-    addBufferTriangle(1, 0.2745098039f, 0.5882352941f, 0.9294117647f, 1.0f);
-    addBufferTriangle(2, 0.4431372549f, 0.7490196078f, 0.2705882353f, 1.0f);
-    addBufferTriangle(3, 0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f);
-    addBufferTriangle(4, 0.9568627451f, 0.5137254902f, 0.1215686275f, 1.0f);
-    addBufferSquare(5, 1.0f, 0.7607843137f, 0.05882352941f, 1.0f);
-    addBufferParallelogram(6, 0.6862745098f, 0.5960784314f, 0.8274509804f, 1.0f);
+    glGenVertexArrays(3, VaoId);
+    addBufferTriangle(0);
+    addBufferSquare(1);
+    addBufferParallelogram(2);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glDeleteBuffers(2, VboId);
 }
 
-void MyApp::addBufferTriangle(int i, float r, float g, float b, float a) {
+void MyApp::addBufferTriangle(int i) {
     Triangle triangle;
-    GLfloat rgba[] = {r, g, b, a};
     glBindVertexArray(VaoId[i]);
     {
         glGenBuffers(2, VboId);
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(triangle.vertex) + sizeof(rgba) * 3, NULL, GL_STATIC_DRAW);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(triangle.vertex), triangle.vertex);
-            for (int i = 0; i < 3; i++) {
-                glBufferSubData(GL_ARRAY_BUFFER, sizeof(triangle.vertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
-            }
+            glBufferData(GL_ARRAY_BUFFER, sizeof(triangle.vertex), triangle.vertex, GL_STATIC_DRAW);
             glEnableVertexAttribArray(POSITION);
             glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
                 reinterpret_cast<GLvoid*>(0));
-            glEnableVertexAttribArray(COLOR);
-            glVertexAttribPointer(
-                COLOR, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(sizeof(triangle.vertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
@@ -106,27 +96,18 @@ void MyApp::addBufferTriangle(int i, float r, float g, float b, float a) {
     }
 }
 
-void MyApp::addBufferSquare(int i, float r, float g, float b, float a) {
+void MyApp::addBufferSquare(int i) {
     Square square;
-    GLfloat rgba[] = { r, g, b, a };
     glBindVertexArray(VaoId[i]);
     {
         glGenBuffers(2, VboId);
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(square.vertex) + sizeof(rgba) * 4, NULL, GL_STATIC_DRAW);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(square.vertex), square.vertex);
-            for (int i = 0; i < 4; i++) {
-                glBufferSubData(GL_ARRAY_BUFFER, sizeof(square.vertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
-            }
+            glBufferData(GL_ARRAY_BUFFER, sizeof(square.vertex), square.vertex, GL_STATIC_DRAW);
             glEnableVertexAttribArray(POSITION);
             glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
                 reinterpret_cast<GLvoid*>(0));
-            glEnableVertexAttribArray(COLOR);
-            glVertexAttribPointer(
-                COLOR, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(sizeof(square.vertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
@@ -136,27 +117,18 @@ void MyApp::addBufferSquare(int i, float r, float g, float b, float a) {
     }
 }
 
-void MyApp::addBufferParallelogram(int i, float r, float g, float b, float a) {
+void MyApp::addBufferParallelogram(int i) {
     Parallelogram parallelogram;
-    GLfloat rgba[] = { r, g, b, a };
     glBindVertexArray(VaoId[i]);
     {
         glGenBuffers(2, VboId);
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogram.vertex) + sizeof(rgba) * 4, NULL, GL_STATIC_DRAW);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(parallelogram.vertex), parallelogram.vertex);
-            for (int i = 0; i < 4; i++) {
-                glBufferSubData(GL_ARRAY_BUFFER, sizeof(parallelogram.vertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
-            }
+            glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogram.vertex), parallelogram.vertex, GL_STATIC_DRAW);
             glEnableVertexAttribArray(POSITION);
             glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
                 reinterpret_cast<GLvoid*>(0));
-            glEnableVertexAttribArray(COLOR);
-            glVertexAttribPointer(
-                COLOR, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(sizeof(parallelogram.vertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
@@ -167,10 +139,9 @@ void MyApp::addBufferParallelogram(int i, float r, float g, float b, float a) {
 }
 
 void MyApp::destroyBufferObjects() {
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 3; i++) {
         glBindVertexArray(VaoId[i]);
         glDisableVertexAttribArray(POSITION);
-        glDisableVertexAttribArray(COLOR);
         glDeleteVertexArrays(1, VaoId);
     }
     glBindVertexArray(0);
@@ -201,40 +172,52 @@ const glm::mat4 m7 = glm::translate(glm::vec3(0.25f, 0.0f, 0.0f))
 void MyApp::drawScene() {
   // Drawing directly in clip space
 
+  glm::vec4 rgba;
+
   glBindVertexArray(VaoId[0]);
   Shaders->bind();
 
+  rgba = { 0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f };
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m1));
+  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
                  reinterpret_cast<GLvoid *>(0));
 
-  glBindVertexArray(VaoId[1]);
+  rgba = { 0.2745098039f, 0.5882352941f, 0.9294117647f, 1.0f };
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m2));
+  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
       reinterpret_cast<GLvoid*>(0));
 
-  glBindVertexArray(VaoId[2]);
+  rgba = { 0.4431372549f, 0.7490196078f, 0.2705882353f, 1.0f };
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m3));
+  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
 	  reinterpret_cast<GLvoid*>(0));
 
-  glBindVertexArray(VaoId[3]);
+  rgba = { 0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f };
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m4));
+  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
       reinterpret_cast<GLvoid*>(0));
 
-  glBindVertexArray(VaoId[4]);
+  rgba = { 0.9568627451f, 0.5137254902f, 0.1215686275f, 1.0f };
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m5));
+  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
       reinterpret_cast<GLvoid*>(0));
 
-  glBindVertexArray(VaoId[5]);
+  glBindVertexArray(VaoId[1]);
+  rgba = { 1.0f, 0.7607843137f, 0.05882352941f, 1.0f };
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m6));
+  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE,
       reinterpret_cast<GLvoid*>(0));
 
-  glBindVertexArray(VaoId[6]);
+  glBindVertexArray(VaoId[2]);
+  rgba = { 0.6862745098f, 0.5960784314f, 0.8274509804f, 1.0f };
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m7));
+  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE,
       reinterpret_cast<GLvoid*>(0));
 
