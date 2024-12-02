@@ -29,7 +29,6 @@ class MyApp : public mgl::App {
   void windowSizeCallback(GLFWwindow *win, int width, int height) override;
 
  private:
-  const GLuint POSITION = 0, COLOR = 1;
   GLuint VaoId[7], VboId[2];
   std::unique_ptr<mgl::ShaderProgram> Shaders;
   GLint MatrixId;
@@ -52,7 +51,6 @@ void MyApp::createShaderProgram() {
   Shaders->addShader(GL_FRAGMENT_SHADER, "clip-fs.glsl");
 
   Shaders->addAttribute(mgl::POSITION_ATTRIBUTE, POSITION);
-  Shaders->addAttribute(mgl::COLOR_ATTRIBUTE, COLOR);
   Shaders->addUniform("Matrix");
   Shaders->addUniform("Color");
 
@@ -64,87 +62,20 @@ void MyApp::createShaderProgram() {
 
 //////////////////////////////////////////////////////////////////// VAOs & VBOs
 
+Triangle triangle;
+Square square;
+Parallelogram parallelogram;
+
 void MyApp::createBufferObjects() {
-    glGenVertexArrays(3, VaoId);
-    addBufferTriangle(0);
-    addBufferSquare(1);
-    addBufferParallelogram(2);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glDeleteBuffers(2, VboId);
-}
-
-void MyApp::addBufferTriangle(int i) {
-    Triangle triangle;
-    glBindVertexArray(VaoId[i]);
-    {
-        glGenBuffers(2, VboId);
-
-        glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-        {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(triangle.vertex), triangle.vertex, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(POSITION);
-            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(0));
-        }
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-        {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangle.index), triangle.index,
-                GL_STATIC_DRAW);
-        }
-    }
-}
-
-void MyApp::addBufferSquare(int i) {
-    Square square;
-    glBindVertexArray(VaoId[i]);
-    {
-        glGenBuffers(2, VboId);
-
-        glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-        {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(square.vertex), square.vertex, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(POSITION);
-            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(0));
-        }
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-        {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square.index), square.index,
-                GL_STATIC_DRAW);
-        }
-    }
-}
-
-void MyApp::addBufferParallelogram(int i) {
-    Parallelogram parallelogram;
-    glBindVertexArray(VaoId[i]);
-    {
-        glGenBuffers(2, VboId);
-
-        glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-        {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogram.vertex), parallelogram.vertex, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(POSITION);
-            glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(0));
-        }
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-        {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(parallelogram.index), parallelogram.index,
-                GL_STATIC_DRAW);
-        }
-    }
+    triangle.createVao();
+    square.createVao();
+    parallelogram.createVao();
 }
 
 void MyApp::destroyBufferObjects() {
-    for (int i = 0; i < 3; i++) {
-        glBindVertexArray(VaoId[i]);
-        glDisableVertexAttribArray(POSITION);
-        glDeleteVertexArrays(1, VaoId);
-    }
-    glBindVertexArray(0);
+    triangle.destroyVao();
+    square.destroyVao();
+    parallelogram.destroyVao();
 }
 
 ////////////////////////////////////////////////////////////////////////// SCENE
@@ -173,53 +104,28 @@ void MyApp::drawScene() {
   // Drawing directly in clip space
 
   glm::vec4 rgba;
-
-  glBindVertexArray(VaoId[0]);
   Shaders->bind();
 
   rgba = { 0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f };
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m1));
-  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
-                 reinterpret_cast<GLvoid *>(0));
+  triangle.draw(rgba, m1, MatrixId, ColorId);
 
   rgba = { 0.2745098039f, 0.5882352941f, 0.9294117647f, 1.0f };
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m2));
-  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
-      reinterpret_cast<GLvoid*>(0));
+  triangle.draw(rgba, m2, MatrixId, ColorId);
 
   rgba = { 0.4431372549f, 0.7490196078f, 0.2705882353f, 1.0f };
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m3));
-  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
-	  reinterpret_cast<GLvoid*>(0));
+  triangle.draw(rgba, m3, MatrixId, ColorId);
 
   rgba = { 0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f };
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m4));
-  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
-      reinterpret_cast<GLvoid*>(0));
+  triangle.draw(rgba, m4, MatrixId, ColorId);
 
   rgba = { 0.9568627451f, 0.5137254902f, 0.1215686275f, 1.0f };
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m5));
-  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
-      reinterpret_cast<GLvoid*>(0));
+  triangle.draw(rgba, m5, MatrixId, ColorId);
 
-  glBindVertexArray(VaoId[1]);
   rgba = { 1.0f, 0.7607843137f, 0.05882352941f, 1.0f };
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m6));
-  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE,
-      reinterpret_cast<GLvoid*>(0));
+  square.draw(rgba, m6, MatrixId, ColorId);
 
-  glBindVertexArray(VaoId[2]);
   rgba = { 0.6862745098f, 0.5960784314f, 0.8274509804f, 1.0f };
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(m7));
-  glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE,
-      reinterpret_cast<GLvoid*>(0));
+  parallelogram.draw(rgba, m7, MatrixId, ColorId);
 
   Shaders->unbind();
   glBindVertexArray(0);
