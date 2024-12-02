@@ -29,16 +29,12 @@ class MyApp : public mgl::App {
   void windowSizeCallback(GLFWwindow *win, int width, int height) override;
 
  private:
-  GLuint VaoId[7], VboId[2];
   std::unique_ptr<mgl::ShaderProgram> Shaders;
   GLint MatrixId;
   GLint ColorId;
 
   void createShaderProgram();
   void createBufferObjects();
-  void addBufferTriangle(int i);
-  void addBufferSquare(int i);
-  void addBufferParallelogram(int i);
   void destroyBufferObjects();
   void drawScene();
 };
