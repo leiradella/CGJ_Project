@@ -15,8 +15,9 @@
 #include <glm/gtx/transform.hpp>
 #include <memory>
 #include <cmath>
-
 #include "../mgl/mgl.hpp"
+
+#include "objects.hpp"
 
 ////////////////////////////////////////////////////////////////////////// MYAPP
 
@@ -60,49 +61,23 @@ void MyApp::createShaderProgram() {
 
 //////////////////////////////////////////////////////////////////// VAOs & VBOs
 
-typedef struct {
-  GLfloat XYZW[4];
-} Vertex;
-
-const Vertex triangleVertex[] = {
-    {{0.0f, 0.0f, 0.0f, 1.0f}},   //0
-    {{0.5f, 0.0f, 0.0f, 1.0f}},   //1
-    {{0.0f, 0.5f, 0.0f, 1.0f}}};  //2
-
-const GLubyte triangleIndices[] = { 0, 1, 2 };
-
-const Vertex squareVertex[] = {
-    {{0.0f, 0.0f, 0.0f, 1.0f}},   //0
-    {{0.5f, 0.0f, 0.0f, 1.0f}},   //1
-    {{0.5f, 0.5f, 0.0f, 1.0f}},   //2
-	{{0.0f, 0.5f, 0.0f, 1.0f}}};  //3
-
-const GLubyte squareIndices[] = { 0, 1, 2, 0, 2, 3};
-
-const Vertex parallelogramVertex[] = {
-    {{0.0f, 0.0f, 0.0f, 1.0f}},   //0
-    {{0.5f, 0.0f, 0.0f, 1.0f}},   //1
-    {{1.0f, 0.5f, 0.0f, 1.0f}},   //2
-	{{0.5f, 0.5f, 0.0f, 1.0f}}};  //3
-
-const GLubyte parallelogramIndices[] = { 0, 1, 2, 0, 2, 3};
-
 void MyApp::createBufferObjects() {
-  glGenVertexArrays(7, VaoId);
-  addBufferTriangle(0, 0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f);
-  addBufferTriangle(1, 0.2745098039f, 0.5882352941f, 0.9294117647f, 1.0f);
-  addBufferTriangle(2, 0.4431372549f, 0.7490196078f, 0.2705882353f, 1.0f);
-  addBufferTriangle(3, 0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f);
-  addBufferTriangle(4, 0.9568627451f, 0.5137254902f, 0.1215686275f, 1.0f);
-  addBufferSquare(5, 1.0f, 0.7607843137f, 0.05882352941f, 1.0f);
-  addBufferParallelogram(6, 0.6862745098f, 0.5960784314f, 0.8274509804f, 1.0f);
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDeleteBuffers(2, VboId);
+    glGenVertexArrays(7, VaoId);
+    addBufferTriangle(0, 0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f);
+    addBufferTriangle(1, 0.2745098039f, 0.5882352941f, 0.9294117647f, 1.0f);
+    addBufferTriangle(2, 0.4431372549f, 0.7490196078f, 0.2705882353f, 1.0f);
+    addBufferTriangle(3, 0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f);
+    addBufferTriangle(4, 0.9568627451f, 0.5137254902f, 0.1215686275f, 1.0f);
+    addBufferSquare(5, 1.0f, 0.7607843137f, 0.05882352941f, 1.0f);
+    addBufferParallelogram(6, 0.6862745098f, 0.5960784314f, 0.8274509804f, 1.0f);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glDeleteBuffers(2, VboId);
 }
 
 void MyApp::addBufferTriangle(int i, float r, float g, float b, float a) {
+    Triangle triangle;
     GLfloat rgba[] = {r, g, b, a};
     glBindVertexArray(VaoId[i]);
     {
@@ -110,10 +85,10 @@ void MyApp::addBufferTriangle(int i, float r, float g, float b, float a) {
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertex) + sizeof(rgba) * 3, NULL, GL_STATIC_DRAW);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(triangleVertex), triangleVertex);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(triangle.vertex) + sizeof(rgba) * 3, NULL, GL_STATIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(triangle.vertex), triangle.vertex);
             for (int i = 0; i < 3; i++) {
-                glBufferSubData(GL_ARRAY_BUFFER, sizeof(triangleVertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
+                glBufferSubData(GL_ARRAY_BUFFER, sizeof(triangle.vertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
             }
             glEnableVertexAttribArray(POSITION);
             glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
@@ -121,17 +96,18 @@ void MyApp::addBufferTriangle(int i, float r, float g, float b, float a) {
             glEnableVertexAttribArray(COLOR);
             glVertexAttribPointer(
                 COLOR, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(sizeof(triangleVertex)));
+                reinterpret_cast<GLvoid*>(sizeof(triangle.vertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangleIndices), triangleIndices,
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangle.index), triangle.index,
                 GL_STATIC_DRAW);
         }
     }
 }
 
 void MyApp::addBufferSquare(int i, float r, float g, float b, float a) {
+    Square square;
     GLfloat rgba[] = { r, g, b, a };
     glBindVertexArray(VaoId[i]);
     {
@@ -139,10 +115,10 @@ void MyApp::addBufferSquare(int i, float r, float g, float b, float a) {
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertex) + sizeof(rgba) * 4, NULL, GL_STATIC_DRAW);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(squareVertex), squareVertex);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(square.vertex) + sizeof(rgba) * 4, NULL, GL_STATIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(square.vertex), square.vertex);
             for (int i = 0; i < 4; i++) {
-                glBufferSubData(GL_ARRAY_BUFFER, sizeof(squareVertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
+                glBufferSubData(GL_ARRAY_BUFFER, sizeof(square.vertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
             }
             glEnableVertexAttribArray(POSITION);
             glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
@@ -150,17 +126,18 @@ void MyApp::addBufferSquare(int i, float r, float g, float b, float a) {
             glEnableVertexAttribArray(COLOR);
             glVertexAttribPointer(
                 COLOR, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(sizeof(squareVertex)));
+                reinterpret_cast<GLvoid*>(sizeof(square.vertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices,
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square.index), square.index,
                 GL_STATIC_DRAW);
         }
     }
 }
 
 void MyApp::addBufferParallelogram(int i, float r, float g, float b, float a) {
+    Parallelogram parallelogram;
     GLfloat rgba[] = { r, g, b, a };
     glBindVertexArray(VaoId[i]);
     {
@@ -168,10 +145,10 @@ void MyApp::addBufferParallelogram(int i, float r, float g, float b, float a) {
 
         glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
         {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogramVertex) + sizeof(rgba) * 4, NULL, GL_STATIC_DRAW);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(parallelogramVertex), parallelogramVertex);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(parallelogram.vertex) + sizeof(rgba) * 4, NULL, GL_STATIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(parallelogram.vertex), parallelogram.vertex);
             for (int i = 0; i < 4; i++) {
-                glBufferSubData(GL_ARRAY_BUFFER, sizeof(parallelogramVertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
+                glBufferSubData(GL_ARRAY_BUFFER, sizeof(parallelogram.vertex) + sizeof(rgba) * i, sizeof(rgba), rgba);
             }
             glEnableVertexAttribArray(POSITION);
             glVertexAttribPointer(POSITION, 4, GL_FLOAT, GL_FALSE, 0,
@@ -179,11 +156,11 @@ void MyApp::addBufferParallelogram(int i, float r, float g, float b, float a) {
             glEnableVertexAttribArray(COLOR);
             glVertexAttribPointer(
                 COLOR, 4, GL_FLOAT, GL_FALSE, 0,
-                reinterpret_cast<GLvoid*>(sizeof(parallelogramVertex)));
+                reinterpret_cast<GLvoid*>(sizeof(parallelogram.vertex)));
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
         {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(parallelogramIndices), parallelogramIndices,
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(parallelogram.index), parallelogram.index,
                 GL_STATIC_DRAW);
         }
     }

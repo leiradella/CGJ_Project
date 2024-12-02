@@ -142,6 +142,8 @@ xcopy /y $(SolutionDir)libraries\glfw\lib-vc2022\glfw3.dll $(OutDir)</Command>
     <ClCompile Include="..\mgl\mglError.cpp" />
     <ClCompile Include="..\mgl\mglShader.cpp" />
     <ClCompile Include="A2.cpp" />
+    <ClCompile Include="objects.cpp" />
+    <ClCompile Include="objects.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mgl\mgl.hpp" />

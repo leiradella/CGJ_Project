@@ -33,6 +33,12 @@
     <ClCompile Include="A2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="objects.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="objects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mgl\mglApp.hpp">
