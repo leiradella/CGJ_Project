@@ -1,6 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 #include "../mgl/mgl.hpp"
 
 const GLuint POSITION = 0;
@@ -9,37 +10,44 @@ typedef struct {
     GLfloat XYZW[4];
 } Vertex;
 
-class Triangle {
+class Object2D {
+public:
+    static const Vertex* vertex;
+    static const GLubyte* index;
+    GLuint vao;
+
+    void createVao();
+    void destroyVao();
+    void draw(glm::vec4 rgba, glm::mat4 matrix, GLint MatrixId, GLint ColorId);
+};
+
+class Triangle : public Object2D {
 public:
     static const Vertex vertex[3];
     static const GLubyte index[3];
-    GLuint vao;
 
 
-    void createVao();
-    void destroyVao();
-
-    void draw(glm::vec4 rgba, glm::mat4 matrix, GLint MatrixId, GLint ColorId);
+    //void createVao();
+    //void destroyVao();
+    //void draw(glm::vec4 rgba, glm::mat4 matrix, GLint MatrixId, GLint ColorId);
 };
 
-class Square {
+class Square : public Object2D {
 public:
     static const Vertex vertex[4];
     static const GLubyte index[6];
-    GLuint vao;
 
-    void createVao();
-    void destroyVao();
-    void draw(glm::vec4 rgba, glm::mat4 matrix, GLint MatrixId, GLint ColorId);
+    //void createVao();
+    //void destroyVao();
+    //void draw(glm::vec4 rgba, glm::mat4 matrix, GLint MatrixId, GLint ColorId);
 };
 
-class Parallelogram {
+class Parallelogram : public Object2D {
 public:
     static const Vertex vertex[4];
     static const GLubyte index[6];
-    GLuint vao;
 
-    void createVao();
-    void destroyVao();
-    void draw(glm::vec4 rgba, glm::mat4 matrix, GLint MatrixId, GLint ColorId);
+    //void createVao();
+    //void destroyVao();
+    //void draw(glm::vec4 rgba, glm::mat4 matrix, GLint MatrixId, GLint ColorId);
 };

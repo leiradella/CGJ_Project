@@ -36,9 +36,6 @@ class MyApp : public mgl::App {
 
   void createShaderProgram();
   void createBufferObjects();
-  void addBufferTriangle(int i);
-  void addBufferSquare(int i);
-  void addBufferParallelogram(int i);
   void destroyBufferObjects();
   void drawScene();
 };
