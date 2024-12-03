@@ -143,17 +143,11 @@ xcopy /y $(SolutionDir)libraries\assimp\bin\x64\assimp-vc143-mt.dll $(OutDir)</C
     <ClCompile Include="..\mgl\mglError.cpp" />
     <ClCompile Include="..\mgl\mglMesh.cpp" />
     <ClCompile Include="..\mgl\mglShader.cpp" />
-<<<<<<< Updated upstream
-    <ClCompile Include="A2.cpp" />
-    <ClCompile Include="objects.cpp" />
-    <ClCompile Include="objects.hpp" />
-=======
     <ClCompile Include="mesh-loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="clip-fs.glsl" />
     <None Include="clip-vs.glsl" />
->>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mgl\mgl.hpp" />
