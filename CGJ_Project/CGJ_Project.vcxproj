@@ -149,6 +149,8 @@ xcopy /y $(SolutionDir)libraries\assimp\bin\x64\assimp-vc143-mt.dll $(OutDir)</C
   <ItemGroup>
     <None Include="clip-fs.glsl" />
     <None Include="clip-vs.glsl" />
+    <None Include="color-fs.glsl" />
+    <None Include="color-vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mgl\mgl.hpp" />
