@@ -36,20 +36,9 @@
     <ClCompile Include="..\mgl\mglShader.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
-<<<<<<< Updated upstream
-    <ClCompile Include="..\mgl\mglApp.cpp">
-      <Filter>mgl</Filter>
-    </ClCompile>
-    <ClCompile Include="A2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="objects.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="objects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-=======
   </ItemGroup>
   <ItemGroup>
     <None Include="clip-fs.glsl">
@@ -58,7 +47,18 @@
     <None Include="clip-vs.glsl">
       <Filter>Resource Files</Filter>
     </None>
->>>>>>> Stashed changes
+    <None Include="color-fs.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="color-vs.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="cube-fs.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="cube-vs.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mgl\mglApp.hpp">
@@ -84,6 +84,9 @@
     </ClInclude>
     <ClInclude Include="..\mgl\mgl.hpp">
       <Filter>mgl</Filter>
+    </ClInclude>
+    <ClInclude Include="objects.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
