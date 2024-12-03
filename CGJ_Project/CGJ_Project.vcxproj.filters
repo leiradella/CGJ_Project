@@ -18,15 +18,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="mesh-loader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mgl\mglApp.cpp">
+      <Filter>mgl</Filter>
+    </ClCompile>
     <ClCompile Include="..\mgl\mglCamera.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
     <ClCompile Include="..\mgl\mglError.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
+    <ClCompile Include="..\mgl\mglMesh.cpp">
+      <Filter>mgl</Filter>
+    </ClCompile>
     <ClCompile Include="..\mgl\mglShader.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
     <ClCompile Include="..\mgl\mglApp.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
@@ -39,6 +49,16 @@
     <ClCompile Include="objects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+=======
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="clip-fs.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="clip-vs.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mgl\mglApp.hpp">
@@ -53,19 +73,17 @@
     <ClInclude Include="..\mgl\mglError.hpp">
       <Filter>mgl</Filter>
     </ClInclude>
+    <ClInclude Include="..\mgl\mglMesh.hpp">
+      <Filter>mgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mgl\mglScenegraph.hpp">
+      <Filter>mgl</Filter>
+    </ClInclude>
     <ClInclude Include="..\mgl\mglShader.hpp">
       <Filter>mgl</Filter>
     </ClInclude>
     <ClInclude Include="..\mgl\mgl.hpp">
       <Filter>mgl</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="clip-fs.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="clip-vs.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
 </Project>
