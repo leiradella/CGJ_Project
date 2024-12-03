@@ -46,12 +46,6 @@ void MyApp::createMeshes() {
   // std::string mesh_file = "cube-vt.obj";
   // std::string mesh_file = "cube-vt2.obj";
   // std::string mesh_file = "torus-vtn-flat.obj";
-  // std::string mesh_file = "torus-vtn-smooth.obj";
-  // std::string mesh_file = "suzanne-vtn-flat.obj";
-  // std::string mesh_file = "suzanne-vtn-smooth.obj";
-  // std::string mesh_file = "teapot-vn-flat.obj";
-  // std::string mesh_file = "teapot-vn-smooth.obj";
-  // std::string mesh_file = "bunny-vn-flat.obj";
   // std::string mesh_file = "bunny-vn-smooth.obj";
   std::string mesh_file = "bunny-vn-smooth.obj";
   std::string mesh_fullname = mesh_dir + mesh_file;

@@ -1,7 +1,5 @@
-
 /.vs
 CGJ_Project/CGJ_Project.vcxproj.user
-*.obj
 *.recipe
 /CGJ_Project/x64
 x64/Debug/CGJ_Project.pdb
