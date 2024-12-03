@@ -144,6 +144,7 @@ xcopy /y $(SolutionDir)libraries\assimp\bin\x64\assimp-vc143-mt.dll $(OutDir)</C
     <ClCompile Include="..\mgl\mglMesh.cpp" />
     <ClCompile Include="..\mgl\mglShader.cpp" />
     <ClCompile Include="mesh-loader.cpp" />
+    <ClCompile Include="objects.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="clip-fs.glsl" />
@@ -158,6 +159,7 @@ xcopy /y $(SolutionDir)libraries\assimp\bin\x64\assimp-vc143-mt.dll $(OutDir)</C
     <ClInclude Include="..\mgl\mglMesh.hpp" />
     <ClInclude Include="..\mgl\mglScenegraph.hpp" />
     <ClInclude Include="..\mgl\mglShader.hpp" />
+    <ClInclude Include="objects.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
