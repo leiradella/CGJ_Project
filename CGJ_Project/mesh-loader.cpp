@@ -48,13 +48,12 @@ class MyApp : public mgl::App {
 void MyApp::createMeshes() {
   std::string mesh_dir = "../assets/";
   // std::string mesh_file = "cube-v.obj";
-  // std::string mesh_file = "cube-vn-flat.obj";
+  std::string mesh_file = "cube-vn-flat.obj";
   // std::string mesh_file = "cube-vn-smooth.obj";
   // std::string mesh_file = "cube-vt.obj";
   // std::string mesh_file = "cube-vt2.obj";
   // std::string mesh_file = "torus-vtn-flat.obj";
   // std::string mesh_file = "bunny-vn-smooth.obj";
-  std::string mesh_file = "bunny-vn-smooth.obj";
   std::string mesh_fullname = mesh_dir + mesh_file;
 
   Mesh = new mgl::Mesh();

@@ -23,9 +23,6 @@ public:
 	mgl::Camera* camera = nullptr;
 	void setCamera(mgl::Camera* camera);
 private:
-	//sphrical camera variables
-	float pitch;
-
 	//key states, they can either be PRESSED or NOT_PRESSED
 	//key states are saved between calls of the callback functions from GLFW
 	static bool leftMouseButton;
