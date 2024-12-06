@@ -39,6 +39,9 @@
     <ClCompile Include="objects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="scene-graph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="clip-fs.glsl">
@@ -86,6 +89,9 @@
       <Filter>mgl</Filter>
     </ClInclude>
     <ClInclude Include="objects.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scene-graph.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
