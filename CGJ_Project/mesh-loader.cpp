@@ -28,6 +28,7 @@ class MyApp : public mgl::App {
   mgl::ShaderProgram *Shaders = nullptr;
   mgl::Camera *Camera = nullptr;
   GLint ModelMatrixId;
+  GLint BaseColorId;
   mgl::Mesh *Mesh = nullptr;
 
   void createMeshes();
@@ -45,9 +46,8 @@ void MyApp::createMeshes() {
   // std::string mesh_file = "cube-vn-smooth.obj";
   // std::string mesh_file = "cube-vt.obj";
   // std::string mesh_file = "cube-vt2.obj";
-  // std::string mesh_file = "torus-vtn-flat.obj";
   // std::string mesh_file = "bunny-vn-smooth.obj";
-  std::string mesh_file = "bunny-vn-smooth.obj";
+  std::string mesh_file = "Parallelogram_piece_vn.obj";
   std::string mesh_fullname = mesh_dir + mesh_file;
 
   Mesh = new mgl::Mesh();
@@ -73,10 +73,12 @@ void MyApp::createShaderPrograms() {
     Shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
   }
 
+  Shaders->addUniform("BaseColor");
   Shaders->addUniform(mgl::MODEL_MATRIX);
   Shaders->addUniformBlock(mgl::CAMERA_BLOCK, UBO_BP);
   Shaders->create();
 
+  BaseColorId = Shaders->Uniforms["BaseColor"].index;
   ModelMatrixId = Shaders->Uniforms[mgl::MODEL_MATRIX].index;
 }
 
