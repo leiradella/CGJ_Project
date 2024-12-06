@@ -1,7 +1,7 @@
 #include "InputManager.h"
 #include <stdio.h>
 
-
+Projection InputManager::projection = PERSPECTIVE;
 bool InputManager::leftMouseButton = NOT_PRESSED;
 double InputManager::cursorXPos = 0.0f;
 double InputManager::cursorYPos = 0.0f;
@@ -75,6 +75,31 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
     }
 }
 
+// Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
+const glm::mat4 ProjectionMatrix1 =
+glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
+
+// Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
+const glm::mat4 ProjectionMatrix2 =
+glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
+
+void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+        if (projection == PERSPECTIVE) {
+            projection = ORTHOGONAL;
+            camera->setProjectionMatrix(ProjectionMatrix2);
+        }
+        else {
+            projection = PERSPECTIVE;
+            camera->setProjectionMatrix(ProjectionMatrix1);
+        }
+    }
+}
+
 void InputManager::setCamera(mgl::Camera* camera) {
     InputManager::camera = camera;
+    camera->setProjectionMatrix(ProjectionMatrix1);
+    projection = PERSPECTIVE;
+
+    camera->setViewMatrix(camera->getEye(), camera->getCenter(), camera->getUp());
 }

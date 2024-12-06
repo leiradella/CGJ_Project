@@ -11,18 +11,27 @@
 #define PRESSED true
 #define NOT_PRESSED false
 
+enum Projection
+{
+	PERSPECTIVE,
+	ORTHOGONAL
+};
+
 class InputManager {
 public:
 	InputManager();
 
 	void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 	void cursorCallback(GLFWwindow* window, double xpos, double ypos);
+	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 	
 	// reference to the camera
 	mgl::Camera* camera = nullptr;
 	void setCamera(mgl::Camera* camera);
 private:
+	static Projection projection;
+
 	//key states, they can either be PRESSED or NOT_PRESSED
 	//key states are saved between calls of the callback functions from GLFW
 	static bool leftMouseButton;
