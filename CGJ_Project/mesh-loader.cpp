@@ -15,6 +15,8 @@
 
 #include "../mgl/mgl.hpp"
 
+#include "InputManager.h"
+
 ////////////////////////////////////////////////////////////////////////// MYAPP
 
 class MyApp : public mgl::App {
@@ -22,6 +24,9 @@ class MyApp : public mgl::App {
   void initCallback(GLFWwindow *win) override;
   void displayCallback(GLFWwindow *win, double elapsed) override;
   void windowSizeCallback(GLFWwindow *win, int width, int height) override;
+  void mouseButtonCallback(GLFWwindow* window, int button, int action,
+      int mods) override;
+  void cursorCallback(GLFWwindow* window, double xpos, double ypos) override;
 
  private:
   const GLuint UBO_BP = 0;
@@ -29,10 +34,12 @@ class MyApp : public mgl::App {
   mgl::Camera *Camera = nullptr;
   GLint ModelMatrixId;
   mgl::Mesh *Mesh = nullptr;
+  InputManager *inputManager = nullptr;
 
   void createMeshes();
   void createShaderPrograms();
   void createCamera();
+  void createInputManager();
   void drawScene();
 };
 
@@ -123,6 +130,7 @@ void MyApp::initCallback(GLFWwindow *win) {
   createMeshes();
   createShaderPrograms();  // after mesh;
   createCamera();
+  createInputManager();
 }
 
 void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
@@ -131,6 +139,21 @@ void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
 }
 
 void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
+
+void MyApp::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    inputManager->mouseButtonCallback(window, button, action, mods);
+}
+
+void MyApp:: cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+    inputManager->cursorCallback(window, xpos, ypos);
+}
+
+/////////////////////////////////////////////////////////////////////////// INPUT MANAGER
+
+void MyApp::createInputManager() {
+    inputManager = new InputManager;
+    inputManager->setCamera(Camera);
+}
 
 /////////////////////////////////////////////////////////////////////////// MAIN
 
