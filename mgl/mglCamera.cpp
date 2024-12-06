@@ -30,8 +30,11 @@ Camera::~Camera() {
 
 glm::mat4 Camera::getViewMatrix() const { return ViewMatrix; }
 
-void Camera::setViewMatrix(const glm::mat4 &viewmatrix) {
-  ViewMatrix = viewmatrix;
+void Camera::setViewMatrix(const glm::vec3& eyecoords, const glm::vec3& centercoords, const glm::vec3& upcoords) {
+  ViewMatrix = glm::lookAt(eyecoords, centercoords, upcoords);
+  setEye(eyecoords);
+  setCenter(centercoords);
+  setUp(upcoords);
   glBindBuffer(GL_UNIFORM_BUFFER, UboId);
   glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4),
                   glm::value_ptr(ViewMatrix));
@@ -47,6 +50,18 @@ void Camera::setProjectionMatrix(const glm::mat4 &projectionmatrix) {
                   glm::value_ptr(ProjectionMatrix));
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
+
+glm::vec3 Camera::getEye() const { return eye; }
+
+void Camera::setEye(const glm::vec3& eyecoords) { eye = eyecoords; }
+
+glm::vec3 Camera::getCenter() const { return center; }
+
+void Camera::setCenter(const glm::vec3& centercoords) { center = centercoords; }
+
+glm::vec3 Camera::getUp() const { return up; }
+
+void Camera::setUp(const glm::vec3& upcoords) { up = upcoords; }
 
 ////////////////////////////////////////////////////////////////////////////////
 }  // namespace mgl

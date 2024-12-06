@@ -89,16 +89,6 @@ void MyApp::createShaderPrograms() {
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
 
-// Eye(5,5,5) Center(0,0,0) Up(0,1,0)
-const glm::mat4 ViewMatrix1 =
-    glm::lookAt(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f));
-
-// Eye(-5,-5,-5) Center(0,0,0) Up(0,1,0)
-const glm::mat4 ViewMatrix2 =
-    glm::lookAt(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f));
-
 // Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
 const glm::mat4 ProjectionMatrix1 =
     glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
@@ -108,8 +98,13 @@ const glm::mat4 ProjectionMatrix2 =
     glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
 
 void MyApp::createCamera() {
+    glm::vec3 eye(5.0f, 5.0f, 5.0f);
+    glm::vec3 center(0.0f, 0.0f, 0.0f); 
+    glm::vec3 up(0.0f, 1.0f, 0.0f);
+
   Camera = new mgl::Camera(UBO_BP);
-  Camera->setViewMatrix(ViewMatrix1);
+  //set view matrix parameters
+  Camera->setViewMatrix(eye, center, up);
   Camera->setProjectionMatrix(ProjectionMatrix2);
 }
 

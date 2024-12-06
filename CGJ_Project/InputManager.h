@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/transform.hpp>
 #include "../mgl/mgl.hpp"
 
@@ -23,7 +24,7 @@ public:
 	void setCamera(mgl::Camera* camera);
 private:
 	//sphrical camera variables
-	float camX = 5.0f, camY = 5.0f, camZ = 5.0f;
+	float pitch;
 
 	//key states, they can either be PRESSED or NOT_PRESSED
 	//key states are saved between calls of the callback functions from GLFW
