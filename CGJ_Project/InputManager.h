@@ -26,15 +26,22 @@ public:
 	void cursorCallback(GLFWwindow* window, double xpos, double ypos);
 	void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void windowSizeCallback(GLFWwindow* window, int width, int height);
 
 	
-	// reference to the camera
-	mgl::Camera* camera = nullptr;
+	// reference to the cameras
+	mgl::Camera* camera1 = nullptr;
+	mgl::Camera* camera2 = nullptr;
+	mgl::Camera* activeCamera = nullptr;
 	void setCamera(mgl::Camera* camera);
+	void setActiveCamera(mgl::Camera* camera);
+	void setUBO(GLuint UBO);
 private:
+	//camera stuff
 	static Projection projection;
+	GLuint UBO_BP;
 
-
+	//spherical coordinates
 	float radius;
 	float rotX;
 	float rotY;

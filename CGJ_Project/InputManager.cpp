@@ -26,9 +26,9 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
     double deltaX, deltaY;
     float angle, deltaPitch, newPitch;
     glm::vec3 axis(0.0f); 
-    glm::vec3 eye = camera->getEye();
-    glm::vec3 center = camera->getCenter();
-    glm::vec3 up = camera->getUp();
+    glm::vec3 eye = activeCamera->getEye();
+    glm::vec3 center = activeCamera->getCenter();
+    glm::vec3 up = activeCamera->getUp();
 
     if (leftMouseButton == PRESSED) {
 
@@ -67,7 +67,7 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
         
 
         //printf("x = %f, y = %f, z = %f\n", camCoords.x, camCoords.y, camCoords.z);
-        camera->setViewMatrix(eye, center, up);
+        activeCamera->setViewMatrix(eye, center, up);
 
         startCursorXPos = cursorXPos;
         startCursorYPos = cursorYPos;
@@ -76,10 +76,10 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
 
 void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 
-    glm::vec3 viewDir = glm::normalize(camera->getEye() - camera->getCenter());
-    glm::vec3 eye = camera->getEye();
-    glm::vec3 center = camera->getCenter();
-    glm::vec3 up = camera->getUp();
+    glm::vec3 viewDir = glm::normalize(activeCamera->getEye() - activeCamera->getCenter());
+    glm::vec3 eye = activeCamera->getEye();
+    glm::vec3 center = activeCamera->getCenter();
+    glm::vec3 up = activeCamera->getUp();
 
     radius = glm::length(eye - center) - yoffset;
     rotX = glm::atan(viewDir.z, viewDir.x);
@@ -98,7 +98,7 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 
 
     //printf("x = %f, y = %f, z = %f\n", camCoords.x, camCoords.y, camCoords.z);
-    camera->setViewMatrix(eye, center, up);
+    activeCamera->setViewMatrix(eye, center, up);
 }
 
 // Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
@@ -113,19 +113,60 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
     if (key == GLFW_KEY_P && action == GLFW_PRESS) {
         if (projection == PERSPECTIVE) {
             projection = ORTHOGONAL;
-            camera->setProjectionMatrix(ProjectionMatrix2);
+            activeCamera->setProjectionMatrix(ProjectionMatrix2);
         }
         else {
             projection = PERSPECTIVE;
-            camera->setProjectionMatrix(ProjectionMatrix1);
+            activeCamera->setProjectionMatrix(ProjectionMatrix1);
+        }
+    }
+    else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+        if (activeCamera == camera1) {
+            setActiveCamera(camera2);
+        }
+        else if (activeCamera == camera2) {
+            setActiveCamera(camera1);
         }
     }
 }
 
-void InputManager::setCamera(mgl::Camera* camera) {
-    InputManager::camera = camera;
-    camera->setProjectionMatrix(ProjectionMatrix1);
-    projection = PERSPECTIVE;
+void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height) {
+    float ratio;
+    if (height == 0) { height = 1; }
+    glViewport(0, 0, width, height);
+    ratio = (1.0f * width) / height;
+    const glm::mat4 proj =
+        glm::perspective(glm::radians(30.0f), ratio, 1.0f, 10.0f);
 
-    camera->setViewMatrix(camera->getEye(), camera->getCenter(), camera->getUp());
+    activeCamera->setProjectionMatrix(proj);
+}
+
+void InputManager::setCamera(mgl::Camera* camera) {
+
+    if (camera1 == nullptr) {
+        camera1 = camera;
+    }
+    else if (camera2 == nullptr) {
+        camera2 = camera;
+    }
+    else {
+        printf("InputManager: tried to set too many cameras (limit = 2)\n");
+    }
+}
+
+void InputManager::setActiveCamera(mgl::Camera* camera) {
+    activeCamera = camera;
+    
+    glGenBuffers(1, &activeCamera->UboId);
+    glBindBuffer(GL_UNIFORM_BUFFER, activeCamera->UboId);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, 0, GL_STREAM_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, UBO_BP, activeCamera->UboId);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    activeCamera->setProjectionMatrix(ProjectionMatrix1);
+    activeCamera->setViewMatrix(activeCamera->getEye(), activeCamera->getCenter(), activeCamera->getUp());
+}
+
+void InputManager::setUBO(GLuint UBO) {
+    UBO_BP = UBO;
 }

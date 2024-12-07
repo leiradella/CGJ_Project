@@ -31,9 +31,10 @@ class MyApp : public mgl::App {
     void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) override;
 
  private:
-    const GLuint UBO_BP = 0;
+     const GLuint UBO_BP = 0;
     mgl::ShaderProgram *Shaders = nullptr;
-    mgl::Camera *Camera = nullptr;
+    mgl::Camera* Camera1 = nullptr;
+    mgl::Camera* Camera2 = nullptr;
     GLint ModelMatrixId;
     mgl::Mesh *Mesh = nullptr;
     InputManager *inputManager = nullptr;
@@ -91,7 +92,8 @@ void MyApp::createShaderPrograms() {
 ///////////////////////////////////////////////////////////////////////// CAMERA
 
 void MyApp::createCamera() {
-    Camera = new mgl::Camera(UBO_BP);
+    Camera1 = new mgl::Camera(UBO_BP);
+    Camera2 = new mgl::Camera(1);
     //glm::vec3 eye(5.0f, 5.0f, 5.0f);
     //glm::vec3 center(0.0f, 0.0f, 0.0f); 
     //glm::vec3 up(0.0f, 1.0f, 0.0f);
@@ -120,15 +122,7 @@ void MyApp::initCallback(GLFWwindow *win) {
 }
 
 void MyApp::windowSizeCallback(GLFWwindow *win, int width, int height) {
-    
-    float ratio;
-    if (height == 0) { height = 1; }
-    glViewport(0, 0, width, height);
-    ratio = (1.0f * width) / height;
-    const glm::mat4 proj =
-        glm::perspective(glm::radians(30.0f), ratio, 1.0f, 10.0f);
-
-    Camera->setProjectionMatrix(proj);
+    inputManager->windowSizeCallback(win, width, height);
 }
 
 void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
@@ -153,7 +147,10 @@ void MyApp::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 
 void MyApp::createInputManager() {
     inputManager = new InputManager;
-    inputManager->setCamera(Camera);
+    inputManager->setUBO(UBO_BP);
+    inputManager->setCamera(Camera1);
+    inputManager->setCamera(Camera2);
+    inputManager->setActiveCamera(Camera1);
 }
 
 /////////////////////////////////////////////////////////////////////////// MAIN

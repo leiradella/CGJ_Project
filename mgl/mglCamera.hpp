@@ -21,7 +21,6 @@ class Camera;
 
 class Camera {
  private:
-  GLuint UboId;
   glm::mat4 ViewMatrix;
   glm::mat4 ProjectionMatrix;
   glm::vec3 eye = { 5.0f, 5.0f, 5.0f };
@@ -35,6 +34,7 @@ class Camera {
   void setUp(const glm::vec3& upcoords);
 
  public:
+	 GLuint UboId;
   explicit Camera(GLuint bindingpoint);
   virtual ~Camera();
   glm::mat4 getViewMatrix() const;
