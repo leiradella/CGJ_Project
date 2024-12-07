@@ -24,7 +24,6 @@ void InputManager::mouseButtonCallback(GLFWwindow* window, int button, int actio
 
 void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
     double deltaX, deltaY;
-    float angle, deltaPitch, newPitch;
     glm::vec3 axis(0.0f); 
     glm::vec3 eye = activeCamera->getEye();
     glm::vec3 center = activeCamera->getCenter();
@@ -46,8 +45,8 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
         rotY = glm::asin(viewDir.y);          // Vertical angle
 
         // Update angles based on input deltas
-        rotX += deltaX * 0.01f;                // Horizontal rotation
-        rotY += deltaY * 0.01f;              // Vertical rotation
+        rotX += (float)(deltaX) * 0.01f;
+        rotY += (float)(deltaY) * 0.01f;
 
         // Clamp rotY to avoid flipping at poles
         float epsilon = 0.01f; // Small buffer to avoid gimbal lock
@@ -81,8 +80,8 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
     glm::vec3 center = activeCamera->getCenter();
     glm::vec3 up = activeCamera->getUp();
 
-    radius = glm::length(eye - center) - yoffset;
-    rotX = glm::atan(viewDir.z, viewDir.x);
+    radius = glm::length(eye - center) - (float)(yoffset);
+    rotX = (float)(glm::atan(viewDir.z, viewDir.x));
     rotY = glm::asin(viewDir.y);
 
     viewDir.x = radius * glm::cos(rotY) * glm::cos(rotX);

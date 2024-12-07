@@ -39,7 +39,7 @@ class MyApp : public mgl::App {
   
     mgl::Mesh *Mesh = nullptr;
     InputManager *inputManager = nullptr;
-
+    GLint BaseColorId;
     void createMeshes();
     void createShaderPrograms();
     void createCamera();
