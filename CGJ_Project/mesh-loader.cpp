@@ -36,6 +36,7 @@ class MyApp : public mgl::App {
     mgl::Camera* Camera1 = nullptr;
     mgl::Camera* Camera2 = nullptr;
     GLint ModelMatrixId;
+  
     mgl::Mesh *Mesh = nullptr;
     InputManager *inputManager = nullptr;
 
@@ -49,44 +50,46 @@ class MyApp : public mgl::App {
 ///////////////////////////////////////////////////////////////////////// MESHES
 
 void MyApp::createMeshes() {
-    std::string mesh_dir = "../assets/";
-    // std::string mesh_file = "cube-v.obj";
-    std::string mesh_file = "cube-vn-flat.obj";
-    // std::string mesh_file = "cube-vn-smooth.obj";
-    // std::string mesh_file = "cube-vt.obj";
-    // std::string mesh_file = "cube-vt2.obj";
-    // std::string mesh_file = "torus-vtn-flat.obj";
-    // std::string mesh_file = "bunny-vn-smooth.obj";
-    std::string mesh_fullname = mesh_dir + mesh_file;
+  std::string mesh_dir = "../assets/";
+  // std::string mesh_file = "cube-v.obj";
+  // std::string mesh_file = "cube-vn-flat.obj";
+  // std::string mesh_file = "cube-vn-smooth.obj";
+  // std::string mesh_file = "cube-vt.obj";
+  // std::string mesh_file = "cube-vt2.obj";
+  // std::string mesh_file = "bunny-vn-smooth.obj";
+  std::string mesh_file = "Parallelogram_piece_vn.obj";
+  std::string mesh_fullname = mesh_dir + mesh_file;
 
-    Mesh = new mgl::Mesh();
-    Mesh->joinIdenticalVertices();
-    Mesh->create(mesh_fullname);
+  Mesh = new mgl::Mesh();
+  Mesh->joinIdenticalVertices();
+  Mesh->create(mesh_fullname);
 }
 
 ///////////////////////////////////////////////////////////////////////// SHADER
 
 void MyApp::createShaderPrograms() {
-    Shaders = new mgl::ShaderProgram();
-    Shaders->addShader(GL_VERTEX_SHADER, "cube-vs.glsl");
-    Shaders->addShader(GL_FRAGMENT_SHADER, "cube-fs.glsl");
+  Shaders = new mgl::ShaderProgram();
+  Shaders->addShader(GL_VERTEX_SHADER, "cube-vs.glsl");
+  Shaders->addShader(GL_FRAGMENT_SHADER, "cube-fs.glsl");
 
-    Shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
-    if (Mesh->hasNormals()) {
-        Shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
-    }
-    if (Mesh->hasTexcoords()) {
-        Shaders->addAttribute(mgl::TEXCOORD_ATTRIBUTE, mgl::Mesh::TEXCOORD);
-    }
-    if (Mesh->hasTangentsAndBitangents()) {
-        Shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
-    }
+  Shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
+  if (Mesh->hasNormals()) {
+    Shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
+  }
+  if (Mesh->hasTexcoords()) {
+    Shaders->addAttribute(mgl::TEXCOORD_ATTRIBUTE, mgl::Mesh::TEXCOORD);
+  }
+  if (Mesh->hasTangentsAndBitangents()) {
+    Shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
+  }
 
-    Shaders->addUniform(mgl::MODEL_MATRIX);
-    Shaders->addUniformBlock(mgl::CAMERA_BLOCK, UBO_BP);
-    Shaders->create();
+  Shaders->addUniform("BaseColor");
+  Shaders->addUniform(mgl::MODEL_MATRIX);
+  Shaders->addUniformBlock(mgl::CAMERA_BLOCK, UBO_BP);
+  Shaders->create();
 
-    ModelMatrixId = Shaders->Uniforms[mgl::MODEL_MATRIX].index;
+  BaseColorId = Shaders->Uniforms["BaseColor"].index;
+  ModelMatrixId = Shaders->Uniforms[mgl::MODEL_MATRIX].index;
 }
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
