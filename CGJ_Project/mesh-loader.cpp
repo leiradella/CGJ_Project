@@ -28,6 +28,7 @@ class MyApp : public mgl::App {
       int mods) override;
     void cursorCallback(GLFWwindow* window, double xpos, double ypos) override;
     void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
+    void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) override;
 
  private:
     const GLuint UBO_BP = 0;
@@ -135,6 +136,10 @@ void MyApp::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 
 void MyApp::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     inputManager->keyCallback(window, key, scancode, action, mods);
+}
+
+void MyApp::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    inputManager->scrollCallback(window, xoffset, yoffset);
 }
 
 /////////////////////////////////////////////////////////////////////////// INPUT MANAGER

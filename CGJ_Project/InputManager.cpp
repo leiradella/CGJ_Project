@@ -1,5 +1,4 @@
 #include "InputManager.h"
-#include <stdio.h>
 
 Projection InputManager::projection = PERSPECTIVE;
 bool InputManager::leftMouseButton = NOT_PRESSED;
@@ -8,7 +7,7 @@ double InputManager::cursorYPos = 0.0f;
 double InputManager::startCursorXPos = 0.0f;
 double InputManager::startCursorYPos = 0.0f;
 
-InputManager::InputManager() {}
+InputManager::InputManager() { radius = 0.0f; rotY = 0.0f; rotX = 0.0f; }
 
 void InputManager::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     //save mouse button state
@@ -41,23 +40,23 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
         // Compute the spherical coordinates
         glm::vec3 viewDir = glm::normalize(eye - center);
 
-        // Calculate azimuth and elevation from the current view direction
-        float radius = glm::length(eye - center);
-        float azimuth = std::atan2(viewDir.z, viewDir.x); // Angle in the XZ plane
-        float elevation = std::asin(viewDir.y);          // Vertical angle
+        // Calculate rotX and rotY from the current view direction
+        radius = glm::length(eye - center);
+        rotX = glm::atan(viewDir.z, viewDir.x); // Angle in the XZ plane
+        rotY = glm::asin(viewDir.y);          // Vertical angle
 
         // Update angles based on input deltas
-        azimuth += deltaX * 0.01f;                // Horizontal rotation
-        elevation += deltaY * 0.01f;              // Vertical rotation
+        rotX += deltaX * 0.01f;                // Horizontal rotation
+        rotY += deltaY * 0.01f;              // Vertical rotation
 
-        // Clamp elevation to avoid flipping at poles
+        // Clamp rotY to avoid flipping at poles
         float epsilon = 0.01f; // Small buffer to avoid gimbal lock
-        elevation = glm::clamp(elevation, -glm::half_pi<float>() + epsilon, glm::half_pi<float>() - epsilon);
+        rotY = glm::clamp(rotY, -glm::half_pi<float>() + epsilon, glm::half_pi<float>() - epsilon);
 
         // Convert spherical coordinates back to Cartesian coordinates
-        viewDir.x = radius * std::cos(elevation) * std::cos(azimuth);
-        viewDir.y = radius * std::sin(elevation);
-        viewDir.z = radius * std::cos(elevation) * std::sin(azimuth);
+        viewDir.x = radius * glm::cos(rotY) * glm::cos(rotX);
+        viewDir.y = radius * glm::sin(rotY);
+        viewDir.z = radius * glm::cos(rotY) * glm::sin(rotX);
 
         // Update the eye position
         eye = center + viewDir;
@@ -73,6 +72,33 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
         startCursorXPos = cursorXPos;
         startCursorYPos = cursorYPos;
     }
+}
+
+void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+
+    glm::vec3 viewDir = glm::normalize(camera->getEye() - camera->getCenter());
+    glm::vec3 eye = camera->getEye();
+    glm::vec3 center = camera->getCenter();
+    glm::vec3 up = camera->getUp();
+
+    radius = glm::length(eye - center) + yoffset;
+    rotX = glm::atan(viewDir.z, viewDir.x); // Angle in the XZ plane
+    rotY = glm::asin(viewDir.y);          // Vertical angle
+
+    viewDir.x = radius * glm::cos(rotY) * glm::cos(rotX);
+    viewDir.y = radius * glm::sin(rotY);
+    viewDir.z = radius * glm::cos(rotY) * glm::sin(rotX);
+
+    // Update the eye position
+    eye = center + viewDir;
+
+    // Recompute the up vector
+    glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), viewDir));
+    up = glm::normalize(glm::cross(viewDir, right));
+
+
+    //printf("x = %f, y = %f, z = %f\n", camCoords.x, camCoords.y, camCoords.z);
+    camera->setViewMatrix(eye, center, up);
 }
 
 // Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
