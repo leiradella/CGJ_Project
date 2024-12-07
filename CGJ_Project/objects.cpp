@@ -38,7 +38,7 @@ void Object2D::draw(glm::vec4 rgba, glm::mat4 matrix, GLint MatrixId, GLint Colo
     glBindVertexArray(vao);
     glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(matrix));
     glUniform4fv(ColorId, 1, glm::value_ptr(rgba));
-    glDrawElements(GL_TRIANGLES, indexNum, GL_UNSIGNED_BYTE,
+    glDrawElements(GL_TRIANGLES, (GLsizei)(indexNum), GL_UNSIGNED_BYTE,
         reinterpret_cast<GLvoid*>(0));
 }
 

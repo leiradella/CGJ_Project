@@ -15,26 +15,36 @@
 
 #include "../mgl/mgl.hpp"
 
+#include "InputManager.h"
+
 ////////////////////////////////////////////////////////////////////////// MYAPP
 
 class MyApp : public mgl::App {
  public:
-  void initCallback(GLFWwindow *win) override;
-  void displayCallback(GLFWwindow *win, double elapsed) override;
-  void windowSizeCallback(GLFWwindow *win, int width, int height) override;
+    void initCallback(GLFWwindow *win) override;
+    void displayCallback(GLFWwindow *win, double elapsed) override;
+    void windowSizeCallback(GLFWwindow *win, int width, int height) override;
+    void mouseButtonCallback(GLFWwindow* window, int button, int action,
+      int mods) override;
+    void cursorCallback(GLFWwindow* window, double xpos, double ypos) override;
+    void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
+    void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) override;
 
  private:
-  const GLuint UBO_BP = 0;
-  mgl::ShaderProgram *Shaders = nullptr;
-  mgl::Camera *Camera = nullptr;
-  GLint ModelMatrixId;
-  GLint BaseColorId;
-  mgl::Mesh *Mesh = nullptr;
-
-  void createMeshes();
-  void createShaderPrograms();
-  void createCamera();
-  void drawScene();
+     const GLuint UBO_BP = 0;
+    mgl::ShaderProgram *Shaders = nullptr;
+    mgl::Camera* Camera1 = nullptr;
+    mgl::Camera* Camera2 = nullptr;
+    GLint ModelMatrixId;
+  
+    mgl::Mesh *Mesh = nullptr;
+    InputManager *inputManager = nullptr;
+    GLint BaseColorId;
+    void createMeshes();
+    void createShaderPrograms();
+    void createCamera();
+    void createInputManager();
+    void drawScene();
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
@@ -84,28 +94,14 @@ void MyApp::createShaderPrograms() {
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
 
-// Eye(5,5,5) Center(0,0,0) Up(0,1,0)
-const glm::mat4 ViewMatrix1 =
-    glm::lookAt(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f));
-
-// Eye(-5,-5,-5) Center(0,0,0) Up(0,1,0)
-const glm::mat4 ViewMatrix2 =
-    glm::lookAt(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f));
-
-// Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
-const glm::mat4 ProjectionMatrix1 =
-    glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
-
-// Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
-const glm::mat4 ProjectionMatrix2 =
-    glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
-
 void MyApp::createCamera() {
-  Camera = new mgl::Camera(UBO_BP);
-  Camera->setViewMatrix(ViewMatrix1);
-  Camera->setProjectionMatrix(ProjectionMatrix2);
+    Camera1 = new mgl::Camera(UBO_BP);
+    Camera2 = new mgl::Camera(1);
+    //glm::vec3 eye(5.0f, 5.0f, 5.0f);
+    //glm::vec3 center(0.0f, 0.0f, 0.0f); 
+    //glm::vec3 up(0.0f, 1.0f, 0.0f);
+    //Camera->setViewMatrix(eye, center, up);
+    //Camera->setProjectionMatrix(ProjectionMatrix2);
 }
 
 /////////////////////////////////////////////////////////////////////////// DRAW
@@ -113,37 +109,63 @@ void MyApp::createCamera() {
 glm::mat4 ModelMatrix(1.0f);
 
 void MyApp::drawScene() {
-  Shaders->bind();
-  glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-  Mesh->draw();
-  Shaders->unbind();
+    Shaders->bind();
+    glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+    Mesh->draw();
+    Shaders->unbind();
 }
 
 ////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void MyApp::initCallback(GLFWwindow *win) {
-  createMeshes();
-  createShaderPrograms();  // after mesh;
-  createCamera();
+    createMeshes();
+    createShaderPrograms();  // after mesh;
+    createCamera();
+    createInputManager();
 }
 
-void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
-  glViewport(0, 0, winx, winy);
-  // change projection matrices to maintain aspect ratio
+void MyApp::windowSizeCallback(GLFWwindow *win, int width, int height) {
+    inputManager->windowSizeCallback(win, width, height);
 }
 
 void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
 
+void MyApp::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    inputManager->mouseButtonCallback(window, button, action, mods);
+}
+
+void MyApp::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+    inputManager->cursorCallback(window, xpos, ypos);
+}
+
+void MyApp::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    inputManager->keyCallback(window, key, scancode, action, mods);
+}
+
+void MyApp::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    inputManager->scrollCallback(window, xoffset, yoffset);
+}
+
+/////////////////////////////////////////////////////////////////////////// INPUT MANAGER
+
+void MyApp::createInputManager() {
+    inputManager = new InputManager;
+    inputManager->setUBO(UBO_BP);
+    inputManager->setCamera(Camera1);
+    inputManager->setCamera(Camera2);
+    inputManager->setActiveCamera(Camera1);
+}
+
 /////////////////////////////////////////////////////////////////////////// MAIN
 
 int main(int argc, char *argv[]) {
-  mgl::Engine &engine = mgl::Engine::getInstance();
-  engine.setApp(new MyApp());
-  engine.setOpenGL(4, 6);
-  engine.setWindow(800, 600, "Mesh Loader", 0, 1);
-  engine.init();
-  engine.run();
-  exit(EXIT_SUCCESS);
+    mgl::Engine &engine = mgl::Engine::getInstance();
+    engine.setApp(new MyApp());
+    engine.setOpenGL(4, 6);
+    engine.setWindow(800, 600, "Mesh Loader", 0, 1);
+    engine.init();
+    engine.run();
+    exit(EXIT_SUCCESS);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
