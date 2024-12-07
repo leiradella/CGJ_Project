@@ -36,6 +36,7 @@ public:
 	void setCamera(mgl::Camera* camera);
 	void setActiveCamera(mgl::Camera* camera);
 	void setUBO(GLuint UBO);
+	void swapProjectionMatrix();
 private:
 	//camera stuff
 	static Projection projection;

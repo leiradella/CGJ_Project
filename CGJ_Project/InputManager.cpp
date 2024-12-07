@@ -102,23 +102,16 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 }
 
 // Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
-const glm::mat4 ProjectionMatrix1 =
+const glm::mat4 perspectiveProjection =
 glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
 
 // Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
-const glm::mat4 ProjectionMatrix2 =
+const glm::mat4 orthogonalProjection =
 glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_P && action == GLFW_PRESS) {
-        if (projection == PERSPECTIVE) {
-            projection = ORTHOGONAL;
-            activeCamera->setProjectionMatrix(ProjectionMatrix2);
-        }
-        else {
-            projection = PERSPECTIVE;
-            activeCamera->setProjectionMatrix(ProjectionMatrix1);
-        }
+        swapProjectionMatrix();
     }
     else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
         if (activeCamera == camera1) {
@@ -143,11 +136,16 @@ void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height)
 
 void InputManager::setCamera(mgl::Camera* camera) {
 
+    camera->setProjectionMatrix(perspectiveProjection);
     if (camera1 == nullptr) {
         camera1 = camera;
+        camera1->setViewMatrix(glm::vec3(3.0f, 3.0f, 5.0f), glm::vec3(3.0f, 3.0f, 0.0f),
+            camera1->getUp());
     }
     else if (camera2 == nullptr) {
         camera2 = camera;
+        camera2->setViewMatrix(glm::vec3(5.0f, 3.0f, 5.0f), glm::vec3(0.0f, 3.0f, 3.0f),
+            camera2->getUp());
     }
     else {
         printf("InputManager: tried to set too many cameras (limit = 2)\n");
@@ -163,10 +161,19 @@ void InputManager::setActiveCamera(mgl::Camera* camera) {
     glBindBufferBase(GL_UNIFORM_BUFFER, UBO_BP, activeCamera->UboId);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    activeCamera->setProjectionMatrix(ProjectionMatrix1);
+    activeCamera->setProjectionMatrix(activeCamera->getProjectionMatrix());
     activeCamera->setViewMatrix(activeCamera->getEye(), activeCamera->getCenter(), activeCamera->getUp());
 }
 
 void InputManager::setUBO(GLuint UBO) {
     UBO_BP = UBO;
+}
+
+void InputManager::swapProjectionMatrix() {
+    if (activeCamera->getProjectionMatrix() == perspectiveProjection) {
+        activeCamera->setProjectionMatrix(orthogonalProjection);
+    }
+    else {
+        activeCamera->setProjectionMatrix(perspectiveProjection);
+    }
 }
