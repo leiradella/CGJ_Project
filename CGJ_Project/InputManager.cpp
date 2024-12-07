@@ -81,9 +81,9 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
     glm::vec3 center = camera->getCenter();
     glm::vec3 up = camera->getUp();
 
-    radius = glm::length(eye - center) + yoffset;
-    rotX = glm::atan(viewDir.z, viewDir.x); // Angle in the XZ plane
-    rotY = glm::asin(viewDir.y);          // Vertical angle
+    radius = glm::length(eye - center) - yoffset;
+    rotX = glm::atan(viewDir.z, viewDir.x);
+    rotY = glm::asin(viewDir.y);
 
     viewDir.x = radius * glm::cos(rotY) * glm::cos(rotX);
     viewDir.y = radius * glm::sin(rotY);

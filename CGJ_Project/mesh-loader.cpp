@@ -119,9 +119,16 @@ void MyApp::initCallback(GLFWwindow *win) {
     createInputManager();
 }
 
-void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
-    glViewport(0, 0, winx, winy);
-    // change projection matrices to maintain aspect ratio
+void MyApp::windowSizeCallback(GLFWwindow *win, int width, int height) {
+    
+    float ratio;
+    if (height == 0) { height = 1; }
+    glViewport(0, 0, width, height);
+    ratio = (1.0f * width) / height;
+    const glm::mat4 proj =
+        glm::perspective(glm::radians(30.0f), ratio, 1.0f, 10.0f);
+
+    Camera->setProjectionMatrix(proj);
 }
 
 void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
