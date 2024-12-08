@@ -28,9 +28,8 @@ std::vector<SceneNode*> SceneNode::getChildren() {
 }
 
 void SceneNode::transform(glm::mat4 transformMatrix) {
-	ModelMatrix *= transformMatrix;
-}
-
-glm::mat4 SceneNode::getModelMatrix() {
-	return ModelMatrix;
+	ModelMatrix = transformMatrix * ModelMatrix;
+	for (int i = 0; i < children.size(); i++) {
+		children[i]->transform(transformMatrix);
+	}
 }
