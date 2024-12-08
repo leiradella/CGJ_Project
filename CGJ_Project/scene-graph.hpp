@@ -9,10 +9,12 @@ public:
 	SceneNode(mgl::Mesh* m, glm::vec4 color, mgl::ShaderProgram* Shaders);
 	void addChild(SceneNode* child);
 	void draw(GLint ModelMatrixId, GLint ColorId);
+	std::vector<SceneNode*> getChildren();
+	void transform(glm::mat4 transformMatrix);
 
 protected:
 	SceneNode* parent;
-	std::vector<SceneNode> children;
+	std::vector<SceneNode*> children;
 	mgl::Mesh* mesh;
 	glm::vec4 color;
 	glm::mat4 ModelMatrix;

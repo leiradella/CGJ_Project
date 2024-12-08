@@ -19,6 +19,14 @@ void SceneNode::draw(GLint ModelMatrixId, GLint ColorId) {
 }
 
 void SceneNode::addChild(SceneNode* child) {
-	children.push_back(*child);
+	children.push_back(child);
 	child->parent = this;
+}
+
+std::vector<SceneNode*> SceneNode::getChildren() {
+	return children;
+}
+
+void SceneNode::transform(glm::mat4 transformMatrix) {
+	ModelMatrix *= transformMatrix;
 }
