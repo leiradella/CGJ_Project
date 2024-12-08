@@ -39,5 +39,5 @@ void main(void)
     // color = uvColor();
     color = normalColor();
     // color = diffuseColor();
-    FragmentColor = BaseColor + 0.5 * vec4(color, 1.0);
+    FragmentColor = BaseColor + 0.1 * vec4(color, 1.0);
 }
