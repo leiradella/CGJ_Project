@@ -39,10 +39,9 @@ class MyApp : public mgl::App {
     GLint ModelMatrixId;
   
     SceneNode* root = nullptr;
-    mgl::Mesh *Mesh = nullptr;
     InputManager *inputManager = nullptr;
     GLint BaseColorId;
-    void createMeshes();
+    mgl::Mesh* createMesh(std::string meshFile);
     void createShaderPrograms();
     void createSceneGraph();
     void createCamera();
@@ -52,20 +51,15 @@ class MyApp : public mgl::App {
 
 ///////////////////////////////////////////////////////////////////////// MESHES
 
-void MyApp::createMeshes() {
+mgl::Mesh* MyApp::createMesh(std::string meshFile) {
   std::string mesh_dir = "../assets/";
-  // std::string mesh_file = "cube-v.obj";
-  // std::string mesh_file = "cube-vn-flat.obj";
-  // std::string mesh_file = "cube-vn-smooth.obj";
-  // std::string mesh_file = "cube-vt.obj";
-  // std::string mesh_file = "cube-vt2.obj";
-  // std::string mesh_file = "bunny-vn-smooth.obj";
-  std::string mesh_file = "Parallelogram_piece_vn.obj";
-  std::string mesh_fullname = mesh_dir + mesh_file;
+  std::string mesh_fullname = mesh_dir + meshFile;
 
-  Mesh = new mgl::Mesh();
-  Mesh->joinIdenticalVertices();
-  Mesh->create(mesh_fullname);
+
+  mgl::Mesh* mesh = new mgl::Mesh();
+  mesh->joinIdenticalVertices();
+  mesh->create(mesh_fullname);
+  return mesh;
 }
 
 ///////////////////////////////////////////////////////////////////////// SHADER
@@ -76,15 +70,7 @@ void MyApp::createShaderPrograms() {
   Shaders->addShader(GL_FRAGMENT_SHADER, "cube-fs.glsl");
 
   Shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
-  if (Mesh->hasNormals()) {
-    Shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
-  }
-  if (Mesh->hasTexcoords()) {
-    Shaders->addAttribute(mgl::TEXCOORD_ATTRIBUTE, mgl::Mesh::TEXCOORD);
-  }
-  if (Mesh->hasTangentsAndBitangents()) {
-    Shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
-  }
+  Shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
 
   Shaders->addUniform("BaseColor");
   Shaders->addUniform(mgl::MODEL_MATRIX);
@@ -98,54 +84,40 @@ void MyApp::createShaderPrograms() {
 ///////////////////////////////////////////////////////////////////////// SCENE GRAPH
 
 void MyApp::createSceneGraph() {
-    std::string mesh_dir = "../assets/";
-    mgl::Mesh* triangleMesh = new mgl::Mesh();
-    mgl::Mesh* squareMesh = new mgl::Mesh();
-    mgl::Mesh* parallelogramMesh = new mgl::Mesh();
-    triangleMesh->joinIdenticalVertices();
-    squareMesh->joinIdenticalVertices();
-    parallelogramMesh->joinIdenticalVertices();
+    mgl::Mesh* triangleMesh = createMesh("Triangle_piece_vn.obj");
+    mgl::Mesh* squareMesh = createMesh("Square_piece_vn.obj");
+    mgl::Mesh* parallelogramMesh = createMesh("Parallelogram_piece_vn.obj");
 
     root = new SceneNode(nullptr, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), Shaders);
 
-    triangleMesh->create(mesh_dir + "Triangle_piece_vn.obj");
-    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f), Shaders));
     root->addChild(new SceneNode(triangleMesh, glm::vec4(0.2745098039f, 0.5882352941f, 0.9294117647f, 1.0f), Shaders));
     root->addChild(new SceneNode(triangleMesh, glm::vec4(0.4431372549f, 0.7490196078f, 0.2705882353f, 1.0f), Shaders));
-    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f), Shaders));
     root->addChild(new SceneNode(triangleMesh, glm::vec4(0.9568627451f, 0.5137254902f, 0.1215686275f, 1.0f), Shaders));
-
-    squareMesh->create(mesh_dir + "Square_piece_vn.obj");
     root->addChild(new SceneNode(squareMesh, glm::vec4(1.0f, 0.7607843137f, 0.05882352941f, 1.0f), Shaders));
-
-    parallelogramMesh->create(mesh_dir + "Parallelogram_piece_vn.obj");
     root->addChild(new SceneNode(parallelogramMesh, glm::vec4(0.6862745098f, 0.5960784314f, 0.8274509804f, 1.0f), Shaders));
 
     std::vector<SceneNode*> children = root->getChildren();
 
-    children.at(0)->transform(glm::translate(glm::vec3(sqrt(2), 0.0f, 0.0f)) *
-                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                              glm::rotate(glm::radians(-135.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-    children.at(1)->transform(glm::translate(glm::vec3(0.0f, 2*sqrt(2), 0.0f)) *
-                              glm::scale(glm::vec3(2.0f, 2.0f, 1.0f)) *
-                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                              glm::rotate(glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    root->transform(glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+
+    children.at(0)->transform(glm::translate(glm::vec3(-sqrt(2), -2 * sqrt(2), 0.0f)) *
+                              glm::rotate(glm::radians(135.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+    children.at(1)->transform(glm::translate(glm::vec3(0.0f, 2 * sqrt(2), 0.0f)) *
+                              glm::rotate(glm::radians(315.0f), glm::vec3(0.0f, 0.0f, 1.0f)) *
+                              glm::scale(glm::vec3(2.0f, 2.0f, 1.0f)));
     children.at(2)->transform(glm::translate(glm::vec3(-2 * sqrt(2), 0.0f, 0.0f)) *
-                              glm::scale(glm::vec3(2.0f, 2.0f, 1.0f)) *
-                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                              glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-    children.at(3)->transform(glm::translate(glm::vec3(-sqrt(2), -2 * sqrt(2), 0.0f)) *
-                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                              glm::rotate(glm::radians(-225.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+                              glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f)) *
+                              glm::scale(glm::vec3(2.0f, 2.0f, 1.0f)));
+    children.at(3)->transform(glm::translate(glm::vec3(sqrt(2), 0.0f, 0.0f)) *
+                              glm::rotate(glm::radians(225.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
     children.at(4)->transform(glm::translate(glm::vec3(sqrt(2), -sqrt(2), 0.0f)) *
-                              glm::scale(glm::vec3(sqrt(2), sqrt(2), 1.0f)) *
-                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+                              glm::scale(glm::vec3(sqrt(2), sqrt(2), 1.0f)));
     children.at(5)->transform(glm::translate(glm::vec3(0.0f, -sqrt(2), 0.0f)) *
-                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                              glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-    children.at(6)->transform(glm::translate(glm::vec3(2.1213f, 0.70711f, 0.0f)) *
-                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                              glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+                              glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+    children.at(6)->transform(glm::translate(glm::vec3(1.5 * sqrt(2), 0.5 * sqrt(2), 0.0f)) *
+                              glm::rotate(glm::radians(225.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 }
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
@@ -172,7 +144,6 @@ void MyApp::drawScene() {
 ////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void MyApp::initCallback(GLFWwindow *win) {
-    createMeshes();
     createShaderPrograms();  // after mesh;
     createSceneGraph();
     createCamera();
