@@ -109,11 +109,11 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 
 // Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
 const glm::mat4 perspectiveProjection =
-glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
+glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 100.0f);
 
 // Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
 const glm::mat4 orthogonalProjection =
-glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
+glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 100.0f);
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     switch (key) {
@@ -161,11 +161,16 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 }
 
 void InputManager::playAnimation(int key) {
+    const float ROTATION_STEP = 2.0f;
+    std::vector<SceneNode*> children = root->getChildren();
+
     if ((key != GLFW_KEY_RIGHT) && (key != GLFW_KEY_LEFT)) {
         printf("playAnimation: unrecognised key\n");
     }
-    const float ROTATION_STEP = 2.0f;
-    *ModelMatrix = *ModelMatrix * glm::rotate(glm::radians(ROTATION_STEP), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    
+    
+    //children.at(0)->transform(children.at(0)->getModelMatrix() * glm::rotate(glm::radians(ROTATION_STEP), glm::vec3(0.0f, 1.0f, 0.0f)));
 }
 
 void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height) {
@@ -215,8 +220,8 @@ void InputManager::setUBO(GLuint UBO) {
     UBO_BP = UBO;
 }
 
-void InputManager::setModelMatrix(glm::mat4* model) {
-    ModelMatrix = model;
+void InputManager::setRootNode(SceneNode* root) {
+    this->root = root;
 }
 
 void InputManager::swapProjectionMatrix() {

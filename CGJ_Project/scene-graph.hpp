@@ -1,3 +1,5 @@
+#pragma once
+
 #include < vector >
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -11,6 +13,7 @@ public:
 	void draw(GLint ModelMatrixId, GLint ColorId);
 	std::vector<SceneNode*> getChildren();
 	void transform(glm::mat4 transformMatrix);
+	glm::mat4 getModelMatrix();
 
 protected:
 	SceneNode* parent;

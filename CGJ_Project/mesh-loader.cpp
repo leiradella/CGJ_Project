@@ -208,7 +208,7 @@ void MyApp::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 void MyApp::createInputManager() {
     inputManager = new InputManager;
     inputManager->setUBO(UBO_BP);
-    inputManager->setModelMatrix(&ModelMatrix);
+    inputManager->setRootNode(root);
     inputManager->setCamera(Camera1);
     inputManager->setCamera(Camera2);
     inputManager->setActiveCamera(Camera1);

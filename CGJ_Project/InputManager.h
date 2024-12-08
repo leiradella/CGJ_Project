@@ -9,6 +9,8 @@
 #include <glm/gtx/easing.hpp>
 #include "../mgl/mgl.hpp"
 
+#include "scene-graph.hpp"
+
 #define PRESSED true
 #define NOT_PRESSED false
 
@@ -24,7 +26,7 @@ public:
 	void playAnimation(int key);
 
 	//reference to the ModelMatrix
-	glm::mat4* ModelMatrix = nullptr;
+	SceneNode* root = nullptr;
 	
 	// reference to the cameras
 	mgl::Camera* camera1 = nullptr;
@@ -33,7 +35,7 @@ public:
 	void setCamera(mgl::Camera* camera);
 	void setActiveCamera(mgl::Camera* camera);
 	void setUBO(GLuint UBO);
-	void setModelMatrix(glm::mat4* model);
+	void setRootNode(SceneNode* root);
 	void swapProjectionMatrix();
 private:
 	//camera stuff
