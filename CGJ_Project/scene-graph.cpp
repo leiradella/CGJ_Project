@@ -8,9 +8,13 @@ SceneNode::SceneNode(mgl::Mesh* mesh, glm::vec4 color, mgl::ShaderProgram* Shade
 	this->Shaders = Shaders;
 }
 
-void SceneNode::draw() {
+void SceneNode::draw(GLint ModelMatrixId, GLint ColorId) {
 	if (mesh) {
+		Shaders->bind();
+		glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+		glUniform4fv(ColorId, 1, glm::value_ptr(color));
 		mesh->draw();
+		Shaders->unbind();
 	}
 }
 
