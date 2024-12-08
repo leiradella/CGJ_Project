@@ -12,8 +12,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
-
+#include <glm/gtx/string_cast.hpp>
 #include "../mgl/mgl.hpp"
+#include <iostream>
 
 #include "InputManager.h"
 
@@ -35,11 +36,12 @@ class MyApp : public mgl::App {
     mgl::ShaderProgram *Shaders = nullptr;
     mgl::Camera* Camera1 = nullptr;
     mgl::Camera* Camera2 = nullptr;
-    GLint ModelMatrixId;
+    GLint ModelMatrixId = 0;
+    glm::mat4 ModelMatrix = glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)); //glm::identity<glm::mat4>();
   
     mgl::Mesh *Mesh = nullptr;
     InputManager *inputManager = nullptr;
-    GLint BaseColorId;
+    GLint BaseColorId = 0;
     void createMeshes();
     void createShaderPrograms();
     void createCamera();
@@ -106,8 +108,6 @@ void MyApp::createCamera() {
 
 /////////////////////////////////////////////////////////////////////////// DRAW
 
-glm::mat4 ModelMatrix(1.0f);
-
 void MyApp::drawScene() {
     Shaders->bind();
     glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
@@ -151,6 +151,7 @@ void MyApp::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 void MyApp::createInputManager() {
     inputManager = new InputManager;
     inputManager->setUBO(UBO_BP);
+    inputManager->setModelMatrix(&ModelMatrix);
     inputManager->setCamera(Camera1);
     inputManager->setCamera(Camera2);
     inputManager->setActiveCamera(Camera1);

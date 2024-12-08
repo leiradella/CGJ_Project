@@ -1,24 +1,26 @@
 #include "InputManager.h"
 
-Projection InputManager::projection = PERSPECTIVE;
+bool InputManager::rightArrow = NOT_PRESSED;
+bool InputManager::leftArrow = NOT_PRESSED;
 bool InputManager::leftMouseButton = NOT_PRESSED;
 double InputManager::cursorXPos = 0.0f;
 double InputManager::cursorYPos = 0.0f;
 double InputManager::startCursorXPos = 0.0f;
 double InputManager::startCursorYPos = 0.0f;
 
-InputManager::InputManager() { radius = 0.0f; rotY = 0.0f; rotX = 0.0f; }
+InputManager::InputManager() { radius = 0.0f; rotY = 0.0f; rotX = 0.0f; UBO_BP = 5; }
 
 void InputManager::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     //save mouse button state
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        //if pressed, save the position
-        leftMouseButton = PRESSED;
-        glfwGetCursorPos(window, &startCursorXPos, &startCursorYPos);
-    }
-    else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-        leftMouseButton = NOT_PRESSED;
-
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            //if pressed, save the position
+            leftMouseButton = PRESSED;
+            glfwGetCursorPos(window, &startCursorXPos, &startCursorYPos);
+        }
+        else if (action == GLFW_RELEASE) {
+            leftMouseButton = NOT_PRESSED;
+        }
     }
 }
 
@@ -84,6 +86,11 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
     rotX = (float)(glm::atan(viewDir.z, viewDir.x));
     rotY = glm::asin(viewDir.y);
 
+    if (radius < 3.0f) {
+        radius = 3.0f;
+        return;
+    }
+
     viewDir.x = radius * glm::cos(rotY) * glm::cos(rotX);
     viewDir.y = radius * glm::sin(rotY);
     viewDir.z = radius * glm::cos(rotY) * glm::sin(rotX);
@@ -109,21 +116,61 @@ const glm::mat4 orthogonalProjection =
 glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (key == GLFW_KEY_P && action == GLFW_PRESS) {
-        swapProjectionMatrix();
-    }
-    else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-        if (activeCamera == camera1) {
-            setActiveCamera(camera2);
+    switch (key) {
+    case GLFW_KEY_P:
+        if (action == GLFW_PRESS) {
+            swapProjectionMatrix();
         }
-        else if (activeCamera == camera2) {
-            setActiveCamera(camera1);
+        break;
+    case GLFW_KEY_C:
+        if (action == GLFW_PRESS) {
+            if (activeCamera == camera1) {
+                setActiveCamera(camera2);
+            }
+            else if (activeCamera == camera2) {
+                setActiveCamera(camera1);
+            }
         }
+        break;
+    case GLFW_KEY_LEFT:
+        if (action == GLFW_RELEASE) {
+            leftArrow = NOT_PRESSED;
+        }
+        else if (action == GLFW_PRESS || leftArrow == PRESSED) {
+            leftArrow = PRESSED;
+            //animation goes here
+            playAnimation(key);
+        }
+        break;
+    case GLFW_KEY_RIGHT:
+        if (action == GLFW_RELEASE) {
+            rightArrow = NOT_PRESSED;
+        }
+        else if (action == GLFW_PRESS || rightArrow == PRESSED) {
+            rightArrow = PRESSED;
+            //animation goes here
+            playAnimation(key);
+        }
+        break;
+    default:
+        if (action == GLFW_PRESS){
+            printf("unrecognised key\n");
+        }
+        break;
     }
+}
+
+void InputManager::playAnimation(int key) {
+    if ((key != GLFW_KEY_RIGHT) && (key != GLFW_KEY_LEFT)) {
+        printf("playAnimation: unrecognised key\n");
+    }
+    const float ROTATION_STEP = 2.0f;
+    *ModelMatrix = *ModelMatrix * glm::rotate(glm::radians(ROTATION_STEP), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height) {
     float ratio;
+    //avoid division by 0
     if (height == 0) { height = 1; }
     glViewport(0, 0, width, height);
     ratio = (1.0f * width) / height;
@@ -138,7 +185,7 @@ void InputManager::setCamera(mgl::Camera* camera) {
     camera->setProjectionMatrix(perspectiveProjection);
     if (camera1 == nullptr) {
         camera1 = camera;
-        camera1->setViewMatrix(glm::vec3(3.0f, 3.0f, 5.0f), glm::vec3(3.0f, 3.0f, 0.0f),
+        camera1->setViewMatrix(glm::vec3(3.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
             camera1->getUp());
     }
     else if (camera2 == nullptr) {
@@ -166,6 +213,10 @@ void InputManager::setActiveCamera(mgl::Camera* camera) {
 
 void InputManager::setUBO(GLuint UBO) {
     UBO_BP = UBO;
+}
+
+void InputManager::setModelMatrix(glm::mat4* model) {
+    ModelMatrix = model;
 }
 
 void InputManager::swapProjectionMatrix() {
