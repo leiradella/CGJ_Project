@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "InputManager.h"
+#include "scene-graph.hpp"
 
 ////////////////////////////////////////////////////////////////////////// MYAPP
 
@@ -39,11 +40,13 @@ class MyApp : public mgl::App {
     GLint ModelMatrixId = 0;
     glm::mat4 ModelMatrix = glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)); //glm::identity<glm::mat4>();
   
+    SceneNode* root = nullptr;
     mgl::Mesh *Mesh = nullptr;
     InputManager *inputManager = nullptr;
     GLint BaseColorId = 0;
     void createMeshes();
     void createShaderPrograms();
+    void createSceneGraph();
     void createCamera();
     void createInputManager();
     void drawScene();
@@ -94,6 +97,59 @@ void MyApp::createShaderPrograms() {
   ModelMatrixId = Shaders->Uniforms[mgl::MODEL_MATRIX].index;
 }
 
+///////////////////////////////////////////////////////////////////////// SCENE GRAPH
+
+void MyApp::createSceneGraph() {
+    std::string mesh_dir = "../assets/";
+    mgl::Mesh* triangleMesh = new mgl::Mesh();
+    mgl::Mesh* squareMesh = new mgl::Mesh();
+    mgl::Mesh* parallelogramMesh = new mgl::Mesh();
+    triangleMesh->joinIdenticalVertices();
+    squareMesh->joinIdenticalVertices();
+    parallelogramMesh->joinIdenticalVertices();
+
+    root = new SceneNode(nullptr, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), Shaders);
+
+    triangleMesh->create(mesh_dir + "Triangle_piece_vn.obj");
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.2745098039f, 0.5882352941f, 0.9294117647f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.4431372549f, 0.7490196078f, 0.2705882353f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.9568627451f, 0.5137254902f, 0.1215686275f, 1.0f), Shaders));
+
+    squareMesh->create(mesh_dir + "Square_piece_vn.obj");
+    root->addChild(new SceneNode(squareMesh, glm::vec4(1.0f, 0.7607843137f, 0.05882352941f, 1.0f), Shaders));
+
+    parallelogramMesh->create(mesh_dir + "Parallelogram_piece_vn.obj");
+    root->addChild(new SceneNode(parallelogramMesh, glm::vec4(0.6862745098f, 0.5960784314f, 0.8274509804f, 1.0f), Shaders));
+
+    std::vector<SceneNode*> children = root->getChildren();
+
+    children.at(0)->transform(glm::translate(glm::vec3(sqrt(2), 0.0f, 0.0f)) *
+                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                              glm::rotate(glm::radians(-135.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    children.at(1)->transform(glm::translate(glm::vec3(0.0f, 2*sqrt(2), 0.0f)) *
+                              glm::scale(glm::vec3(2.0f, 2.0f, 1.0f)) *
+                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                              glm::rotate(glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    children.at(2)->transform(glm::translate(glm::vec3(-2 * sqrt(2), 0.0f, 0.0f)) *
+                              glm::scale(glm::vec3(2.0f, 2.0f, 1.0f)) *
+                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                              glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    children.at(3)->transform(glm::translate(glm::vec3(-sqrt(2), -2 * sqrt(2), 0.0f)) *
+                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                              glm::rotate(glm::radians(-225.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    children.at(4)->transform(glm::translate(glm::vec3(sqrt(2), -sqrt(2), 0.0f)) *
+                              glm::scale(glm::vec3(sqrt(2), sqrt(2), 1.0f)) *
+                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+    children.at(5)->transform(glm::translate(glm::vec3(0.0f, -sqrt(2), 0.0f)) *
+                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                              glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    children.at(6)->transform(glm::translate(glm::vec3(2.1213f, 0.70711f, 0.0f)) *
+                              glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                              glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+}
+
 ///////////////////////////////////////////////////////////////////////// CAMERA
 
 void MyApp::createCamera() {
@@ -109,10 +165,10 @@ void MyApp::createCamera() {
 /////////////////////////////////////////////////////////////////////////// DRAW
 
 void MyApp::drawScene() {
-    Shaders->bind();
-    glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-    Mesh->draw();
-    Shaders->unbind();
+    std::vector<SceneNode*> children = root->getChildren();
+    for (int i = 0; i < children.size(); i++) {
+        children.at(i)->draw(ModelMatrixId, BaseColorId);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -120,6 +176,7 @@ void MyApp::drawScene() {
 void MyApp::initCallback(GLFWwindow *win) {
     createMeshes();
     createShaderPrograms();  // after mesh;
+    createSceneGraph();
     createCamera();
     createInputManager();
 }
