@@ -9,12 +9,16 @@ SceneNode::SceneNode(mgl::Mesh* mesh, glm::vec4 color, mgl::ShaderProgram* Shade
 }
 
 void SceneNode::draw(GLint ModelMatrixId, GLint ColorId) {
+	ModelMatrix = glm::translate(coordinates) * glm::rotate(glm::radians(angle), rotAxis) * glm::scale(glm::vec3(scale, scale, 1.0f));
 	if (mesh) {
 		Shaders->bind();
 		glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 		glUniform4fv(ColorId, 1, glm::value_ptr(color));
 		mesh->draw();
 		Shaders->unbind();
+	}
+	for (int i = 0; i < children.size(); i++) {
+		children[i]->draw(ModelMatrixId, ColorId);
 	}
 }
 
@@ -27,14 +31,23 @@ std::vector<SceneNode*> SceneNode::getChildren() {
 	return children;
 }
 
-void SceneNode::setModelMatrix(glm::mat4 model) {
-	ModelMatrix = model;
+void SceneNode::setAttributes(glm::vec3 coords, glm::vec3 axis, float angle, float scale) {
+	for (int i = 0; i < children.size(); i++) {
+		children[i]->transform(coordinates - coords, axis, this->angle - angle, scale/this->scale);
+	}
+	coordinates = coords;
+	rotAxis = axis;
+	this->angle = angle;
+	this->scale = scale;
 }
 
-void SceneNode::transform(glm::mat4 transformMatrix) {
-	ModelMatrix = transformMatrix * ModelMatrix;
+void SceneNode::transform(glm::vec3 coords, glm::vec3 axis, float angle, float scale) {
+	coordinates += coords;
+	rotAxis = axis;
+	this->angle += angle;
+	this->scale *= scale;
 	for (int i = 0; i < children.size(); i++) {
-		children[i]->transform(transformMatrix);
+		children[i]->transform(coords, axis, angle, scale);
 	}
 }
 
@@ -52,6 +65,14 @@ void SceneNode::setAngle(float angle) {
 
 float SceneNode::getAngle() {
 	return angle;
+}
+
+void SceneNode::setRotationAxis(glm::vec3 axis) {
+	rotAxis = axis;
+}
+
+glm::vec3 SceneNode::getRotationAxis() {
+	return rotAxis;
 }
 
 void SceneNode::setScale(float scale) {

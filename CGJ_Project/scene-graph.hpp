@@ -1,12 +1,19 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include < vector >
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include "../mgl/mgl.hpp"
 
 //start and end values for interpolation
+//root
+const glm::vec3 startCoordsRoot = { 0.0f, 0.0f, 0.0f };
+const float startAngleRoot = 0.0f;
+const glm::vec3 endCoordsRoot = { 0.0f, 0.0f, 0.0f };
+const float endAngleRoot = 90.0f;
 
 //child 0
 const glm::vec3 startCoords0 = { -sqrt(2), -2*sqrt(2), 0.0f };
@@ -56,13 +63,15 @@ public:
 	void addChild(SceneNode* child);
 	void draw(GLint ModelMatrixId, GLint ColorId);
 	std::vector<SceneNode*> getChildren();
-	void setModelMatrix(glm::mat4 model);
-	void transform(glm::mat4 transformMatrix);
+	void setAttributes(glm::vec3 coords, glm::vec3 axis, float angle, float scale);
+	void transform(glm::vec3 coords, glm::vec3 axis, float angle, float scale);
 
 	void setCoordinates(glm::vec3 coords);
 	glm::vec3 getCoordinates();
 	void setAngle(float angle);
 	float getAngle();
+	void setRotationAxis(glm::vec3 axis);
+	glm::vec3 getRotationAxis();
 	void setScale(float scale);
 	float getScale();
 
@@ -77,5 +86,6 @@ protected:
 	//default atributes for each object
 	glm::vec3 coordinates = { 0.0f, 0.0f, 0.0f };
 	float angle = 0.0f;
+	glm::vec3 rotAxis = { 0.0f, 0.0f, 0.0f };
 	float scale = 1.0f;
 };

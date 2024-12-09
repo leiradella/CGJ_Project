@@ -165,16 +165,15 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 void InputManager::playAnimation(int key) {
     std::vector<SceneNode*> children = root->getChildren();
     
-    //child coordinates
+    //node parameters
     glm::vec3 coords(0.0f);
-    float angle;
-    float scale;
-
-    const glm::vec3 rotAxis(0.0f, 1.0f, 0.0f);
+    glm::vec3 rotAxis(0.0f);
+    float angle = 0;
+    float scale = 0;
 
     //interpolation variables
     static float t = 0.0f;
-    const float step = 0.05;
+    const float step = 0.001;
 
 
     if ((key != GLFW_KEY_RIGHT) && (key != GLFW_KEY_LEFT)) {
@@ -186,12 +185,21 @@ void InputManager::playAnimation(int key) {
     // WHEN T = 0, VALUE = A
     // WHEN T = 1, VALUE = B
     
+    //root
+    coords = (endCoordsRoot - startCoordsRoot) * t + startCoordsRoot;
+    angle = (endAngleRoot - startAngleRoot) * t + startAngleRoot;
+    root->setCoordinates(coords);
+    root->setAngle(angle);
+    root->setRotationAxis(glm::vec3(1.0f, 0.0f, 0.0f));
+
     //child 0
-    coords = (endCoords0 - startCoords0)*t + startCoords0;
-    angle = (endAngle0 - startAngle0)*t + startAngle0;
-    std::cout << glm::to_string(coords) << std::endl;
-    printf("%f\n", angle);
-    children.at(0)->setModelMatrix(glm::translate(coords) * glm::rotate(angle, rotAxis));
+    //coords = (endCoords0 - startCoords0)*t + startCoords0;
+    //angle = (endAngle0 - startAngle0)*t + startAngle0;
+    //coords = { 0.0f, 0.0f, 0.0f };
+    //angle = 0.0f;
+    //std::cout << glm::to_string(coords) << std::endl;
+    //printf("%f\n", angle);
+    //children.at(0)->setModelMatrix(glm::translate(coords) * glm::rotate(angle, rotAxis));
 
     if (key == GLFW_KEY_RIGHT && t < 1.0f) {
         t += step;
@@ -206,6 +214,7 @@ void InputManager::playAnimation(int key) {
     else if (t < 0.0f) {
         t = 0.0f;
     }
+    printf("%f\n", t);
 }
 
 void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height) {
