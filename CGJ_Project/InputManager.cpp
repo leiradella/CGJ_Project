@@ -1,4 +1,6 @@
 #include "InputManager.h"
+#include <iostream>
+#include <glm/gtx/string_cast.hpp>
 
 bool InputManager::rightArrow = NOT_PRESSED;
 bool InputManager::leftArrow = NOT_PRESSED;
@@ -52,7 +54,7 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
 
         // Clamp rotY to avoid flipping at poles
         float epsilon = 0.01f; // Small buffer to avoid gimbal lock
-        rotY = glm::clamp(rotY, -glm::half_pi<float>() + epsilon, glm::half_pi<float>() - epsilon);
+        rotY = glm::clamp(rotY, -glm::pi<float>()/2 + epsilon, glm::pi<float>()/2 - epsilon);
 
         // Convert spherical coordinates back to Cartesian coordinates
         viewDir.x = radius * glm::cos(rotY) * glm::cos(rotX);
@@ -161,16 +163,49 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 }
 
 void InputManager::playAnimation(int key) {
-    const float ROTATION_STEP = 2.0f;
     std::vector<SceneNode*> children = root->getChildren();
+    
+    //child coordinates
+    glm::vec3 coords(0.0f);
+    float angle;
+    float scale;
+
+    const glm::vec3 rotAxis(0.0f, 1.0f, 0.0f);
+
+    //interpolation variables
+    static float t = 0.0f;
+    const float step = 0.05;
+
 
     if ((key != GLFW_KEY_RIGHT) && (key != GLFW_KEY_LEFT)) {
         printf("playAnimation: unrecognised key\n");
     }
+    
+    //INTERPOLATION FORMULA: START (A) -> END (B), T[0,1]
+    // VALUE = (B - A)*T + A
+    // WHEN T = 0, VALUE = A
+    // WHEN T = 1, VALUE = B
+    
+    //child 0
+    coords = (endCoords0 - startCoords0)*t + startCoords0;
+    angle = (endAngle0 - startAngle0)*t + startAngle0;
+    std::cout << glm::to_string(coords) << std::endl;
+    printf("%f\n", angle);
+    children.at(0)->setModelMatrix(glm::translate(coords) * glm::rotate(angle, rotAxis));
 
-    
-    
-    //children.at(0)->transform(children.at(0)->getModelMatrix() * glm::rotate(glm::radians(ROTATION_STEP), glm::vec3(0.0f, 1.0f, 0.0f)));
+    if (key == GLFW_KEY_RIGHT && t < 1.0f) {
+        t += step;
+    }
+    else if (key == GLFW_KEY_LEFT && t > 0.0f) {
+        t -= step;
+    }
+
+    if (t > 1.0f) {
+        t = 1.0f;
+    }
+    else if (t < 0.0f) {
+        t = 0.0f;
+    }
 }
 
 void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height) {

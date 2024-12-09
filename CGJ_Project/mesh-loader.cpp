@@ -104,22 +104,52 @@ void MyApp::createSceneGraph() {
 
     root->transform(glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
+    //child 0
     children.at(0)->transform(glm::translate(glm::vec3(-sqrt(2), -2 * sqrt(2), 0.0f)) *
                               glm::rotate(glm::radians(135.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+    children.at(0)->setAngle(135.0f); 
+    children.at(0)->setCoordinates(glm::vec3(-sqrt(2), -2 * sqrt(2), 0.0f));
+
+
+    //child 1
     children.at(1)->transform(glm::translate(glm::vec3(0.0f, 2 * sqrt(2), 0.0f)) *
                               glm::rotate(glm::radians(315.0f), glm::vec3(0.0f, 0.0f, 1.0f)) *
                               glm::scale(glm::vec3(2.0f, 2.0f, 1.0f)));
+    children.at(1)->setAngle(2.0f);
+    children.at(1)->setAngle(315.0f);
+    children.at(1)->setCoordinates(glm::vec3(0.0f, 2 * sqrt(2), 0.0f));
+
+    //child 2
     children.at(2)->transform(glm::translate(glm::vec3(-2 * sqrt(2), 0.0f, 0.0f)) *
                               glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f)) *
                               glm::scale(glm::vec3(2.0f, 2.0f, 1.0f)));
+    children.at(2)->setScale(2.0f);
+    children.at(2)->setAngle(45.0f);
+    children.at(2)->setCoordinates(glm::vec3(-2 * sqrt(2), 0.0f, 0.0f));
+
+    //child 3
     children.at(3)->transform(glm::translate(glm::vec3(sqrt(2), 0.0f, 0.0f)) *
                               glm::rotate(glm::radians(225.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+    children.at(3)->setAngle(225.0f);
+    children.at(3)->setCoordinates(glm::vec3(sqrt(2), 0.0f, 0.0f));
+
+    //child 4
     children.at(4)->transform(glm::translate(glm::vec3(sqrt(2), -sqrt(2), 0.0f)) *
                               glm::scale(glm::vec3(sqrt(2), sqrt(2), 1.0f)));
+    children.at(4)->setScale(sqrt(2));
+    children.at(4)->setCoordinates(glm::vec3(sqrt(2), -sqrt(2), 0.0f));
+
+    //child 5
     children.at(5)->transform(glm::translate(glm::vec3(0.0f, -sqrt(2), 0.0f)) *
                               glm::rotate(glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+    children.at(5)->setAngle(45.0f);
+    children.at(5)->setCoordinates(glm::vec3(0.0f, -sqrt(2), 0.0f));
+
+    //child 6
     children.at(6)->transform(glm::translate(glm::vec3(1.5 * sqrt(2), 0.5 * sqrt(2), 0.0f)) *
                               glm::rotate(glm::radians(225.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+    children.at(6)->setAngle(225.0f);
+    children.at(6)->setCoordinates(glm::vec3(1.5 * sqrt(2), 0.5 * sqrt(2), 0.0f));
 }
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
