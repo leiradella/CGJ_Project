@@ -57,14 +57,14 @@ const float startAngle6 = 225.0f;
 const glm::vec3 endCoords6 = { 2.92, -1.92, 0.0f };
 const float endAngle6 = 90.0f;
 
+static glm::mat4 ModelMatrix(1.0f);
+
 class SceneNode {
 public:
 	SceneNode(mgl::Mesh* m, glm::vec4 color, mgl::ShaderProgram* Shaders);
 	void addChild(SceneNode* child);
 	void draw(GLint ModelMatrixId, GLint ColorId);
 	std::vector<SceneNode*> getChildren();
-	void setAttributes(glm::vec3 coords, glm::vec3 axis, float angle, float scale);
-	void transform(glm::vec3 coords, glm::vec3 axis, float angle, float scale);
 
 	void setCoordinates(glm::vec3 coords);
 	glm::vec3 getCoordinates();
@@ -80,12 +80,11 @@ protected:
 	std::vector<SceneNode*> children;
 	mgl::Mesh* mesh;
 	glm::vec4 color;
-	glm::mat4 ModelMatrix;
 	mgl::ShaderProgram* Shaders;
 
 	//default atributes for each object
 	glm::vec3 coordinates = { 0.0f, 0.0f, 0.0f };
 	float angle = 0.0f;
-	glm::vec3 rotAxis = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 rotAxis = { 0.0f, 0.0f, 1.0f };
 	float scale = 1.0f;
 };

@@ -110,7 +110,40 @@ void MyApp::createSceneGraph() {
     //child 0
     children.at(0)->setAngle(startAngle0);
     children.at(0)->setCoordinates(startCoords0);
-    children.at(0)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+    //children.at(0)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //child 1
+    children.at(1)->setAngle(startAngle1);
+    children.at(1)->setScale(2);
+    children.at(1)->setCoordinates(startCoords1);
+    //children.at(1)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //child 2
+    children.at(2)->setScale(2.0f);
+    children.at(2)->setAngle(startAngle2);
+    children.at(2)->setCoordinates(startCoords2);
+    //children.at(2)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //child 3
+    children.at(3)->setAngle(startAngle3);
+    children.at(3)->setCoordinates(startCoords3);
+    //children.at(3)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //child 4
+    children.at(4)->setScale(sqrt(2));
+    children.at(4)->setAngle(startAngle4);
+    children.at(4)->setCoordinates(startCoords4);
+    //children.at(4)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //child 5
+    children.at(5)->setAngle(startAngle5);
+    children.at(5)->setCoordinates(startCoords5);
+    //children.at(5)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //child 6
+    children.at(6)->setAngle(startAngle6);
+    children.at(6)->setCoordinates(startCoords6);
+    //children.at(6)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
