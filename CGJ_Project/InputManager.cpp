@@ -197,8 +197,36 @@ void InputManager::playAnimation(int key) {
     angle = (endAngle0 - startAngle0)*t + startAngle0;
     children.at(0)->setCoordinates(coords);
     children.at(0)->setAngle(angle);
-    std::cout << glm::to_string(coords) << std::endl;
-    printf("%f\n", angle);
+
+    coords = (endCoords1 - startCoords1) * t + startCoords1;
+    angle = (endAngle1 - startAngle1) * t + startAngle1;
+    children.at(1)->setCoordinates(coords);
+    children.at(1)->setAngle(angle);
+
+    coords = (endCoords2 - startCoords2) * t + startCoords2;
+    angle = (endAngle2 - startAngle2) * t + startAngle2;
+    children.at(2)->setCoordinates(coords);
+    children.at(2)->setAngle(angle);
+
+    coords = (endCoords3 - startCoords3) * t + startCoords3;
+    angle = (endAngle3 - startAngle3) * t + startAngle3;
+    children.at(3)->setCoordinates(coords);
+    children.at(3)->setAngle(angle);
+
+    coords = (endCoords4 - startCoords4) * t + startCoords4;
+    angle = (endAngle4 - startAngle4) * t + startAngle4;
+    children.at(4)->setCoordinates(coords);
+    children.at(4)->setAngle(angle);
+
+    coords = (endCoords5 - startCoords5) * t + startCoords5;
+    angle = (endAngle5 - startAngle5) * t + startAngle5;
+    children.at(5)->setCoordinates(coords);
+    children.at(5)->setAngle(angle);
+
+    coords = (endCoords6 - startCoords6) * t + startCoords6;
+    angle = (endAngle6 - startAngle6) * t + startAngle6;
+    children.at(6)->setCoordinates(coords);
+    children.at(6)->setAngle(angle);
 
     if (key == GLFW_KEY_RIGHT && t < 1.0f) {
         t += step;
