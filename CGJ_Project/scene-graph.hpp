@@ -67,6 +67,7 @@ public:
 	std::vector<SceneNode*> getChildren() { return children; };
 
 	void setMatrix(glm::mat4 matrix);
+	void update(glm::mat4 matrix);
 	void setScale(float scale) { this->ScaleMatrix = glm::scale(glm::vec3(scale, scale, 1.0f)); };
 	glm::mat4 getScale() { return ScaleMatrix; };
 

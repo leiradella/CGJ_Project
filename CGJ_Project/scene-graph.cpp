@@ -29,6 +29,14 @@ void SceneNode::setMatrix(glm::mat4 matrix) {
 	this->ModelMatrix = matrix;
 	std::vector<SceneNode*> children = this->getChildren();
 	for (int i = 0; i < children.size(); i++) {
-		children[i]->ModelMatrix = matrix * children[i]->ModelMatrix;
+		children[i]->update(matrix);
+	}
+}
+
+void SceneNode::update(glm::mat4 matrix) {
+	this->ModelMatrix = matrix * ModelMatrix;
+	std::vector<SceneNode*> children = this->getChildren();
+	for (int i = 0; i < children.size(); i++) {
+		children[i]->update(matrix);
 	}
 }
