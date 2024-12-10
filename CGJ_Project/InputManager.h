@@ -23,7 +23,8 @@ public:
 	void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void windowSizeCallback(GLFWwindow* window, int width, int height);
-	void playAnimation(int key);
+	bool isLeftArowPresed();
+	bool isRightArowPresed();
 
 	//reference to the ModelMatrix
 	SceneNode* root = nullptr;

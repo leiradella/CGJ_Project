@@ -32,6 +32,7 @@ class MyApp : public mgl::App {
     void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
     void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) override;
 
+
  private:
      const GLuint UBO_BP = 0;
     mgl::ShaderProgram *Shaders = nullptr;
@@ -49,6 +50,7 @@ class MyApp : public mgl::App {
     void createCamera();
     void createInputManager();
     void drawScene();
+    void playAnimation(double deltaT);
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
@@ -168,6 +170,83 @@ void MyApp::drawScene() {
     //}
 }
 
+void MyApp::playAnimation(double deltaT) {
+    std::vector<SceneNode*> children = root->getChildren();
+
+    //node parameters
+    glm::vec3 coords(0.0f);
+    glm::vec3 rotAxis(0.0f);
+    float angle = 0;
+    float scale = 0;
+
+    //interpolation variables
+    static float t = 0.0f;
+    float step = deltaT;
+
+    //INTERPOLATION FORMULA: START (A) -> END (B), T[0,1]
+    // VALUE = (B - A)*T + A
+    // WHEN T = 0, VALUE = A
+    // WHEN T = 1, VALUE = B
+
+    //root
+    //coords = (endCoordsRoot - startCoordsRoot) * t + startCoordsRoot;
+    //angle = (endAngleRoot - startAngleRoot) * t + startAngleRoot;
+    //root->setCoordinates(coords);
+    //root->setAngle(angle);
+    //root->setRotationAxis(glm::vec3(1.0f, 0.0f, 0.0f));
+
+    //child 0
+    coords = (endCoords0 - startCoords0) * t + startCoords0;
+    angle = (endAngle0 - startAngle0) * t + startAngle0;
+    children.at(0)->setCoordinates(coords);
+    children.at(0)->setAngle(angle);
+
+    coords = (endCoords1 - startCoords1) * t + startCoords1;
+    angle = (endAngle1 - startAngle1) * t + startAngle1;
+    children.at(1)->setCoordinates(coords);
+    children.at(1)->setAngle(angle);
+
+    coords = (endCoords2 - startCoords2) * t + startCoords2;
+    angle = (endAngle2 - startAngle2) * t + startAngle2;
+    children.at(2)->setCoordinates(coords);
+    children.at(2)->setAngle(angle);
+
+    coords = (endCoords3 - startCoords3) * t + startCoords3;
+    angle = (endAngle3 - startAngle3) * t + startAngle3;
+    children.at(3)->setCoordinates(coords);
+    children.at(3)->setAngle(angle);
+
+    coords = (endCoords4 - startCoords4) * t + startCoords4;
+    angle = (endAngle4 - startAngle4) * t + startAngle4;
+    children.at(4)->setCoordinates(coords);
+    children.at(4)->setAngle(angle);
+
+    coords = (endCoords5 - startCoords5) * t + startCoords5;
+    angle = (endAngle5 - startAngle5) * t + startAngle5;
+    children.at(5)->setCoordinates(coords);
+    children.at(5)->setAngle(angle);
+
+    coords = (endCoords6 - startCoords6) * t + startCoords6;
+    angle = (endAngle6 - startAngle6) * t + startAngle6;
+    children.at(6)->setCoordinates(coords);
+    children.at(6)->setAngle(angle);
+
+    if (inputManager->isRightArowPresed() && t < 1.0f) {
+        t += step;
+    }
+    else if (inputManager->isLeftArowPresed() && t > 0.0f) {
+        t -= step;
+    }
+
+    if (t > 1.0f) {
+        t = 1.0f;
+    }
+    else if (t < 0.0f) {
+        t = 0.0f;
+    }
+    printf("%f\n", t);
+}
+
 ////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void MyApp::initCallback(GLFWwindow *win) {
@@ -181,7 +260,12 @@ void MyApp::windowSizeCallback(GLFWwindow *win, int width, int height) {
     inputManager->windowSizeCallback(win, width, height);
 }
 
-void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
+void MyApp::displayCallback(GLFWwindow *win, double elapsed) {
+    if (inputManager->isLeftArowPresed() || inputManager->isRightArowPresed()) {
+        playAnimation(elapsed);
+    }
+    drawScene();
+}
 
 void MyApp::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     inputManager->mouseButtonCallback(window, button, action, mods);
