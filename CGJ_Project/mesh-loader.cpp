@@ -169,42 +169,43 @@ void MyApp::playAnimation(double deltaT) {
     // WHEN T = 0, VALUE = A
     // WHEN T = 1, VALUE = B
 
-    //root
-    //coords = (endCoordsRoot - startCoordsRoot) * t + startCoordsRoot;
-    //angle = (endAngleRoot - startAngleRoot) * t + startAngleRoot;
-    //root->setCoordinates(coords);
-    //root->setAngle(angle);
-    //root->setRotationAxis(glm::vec3(1.0f, 0.0f, 0.0f));
 
-    //child 0
+    //child 0 red triangle
     coords = (endCoords0 - startCoords0) * t + startCoords0;
     angle = (endAngle0 - startAngle0) * t + startAngle0;
     children.at(0)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
+    //child 1 blue triangle
     coords = (endCoords1 - startCoords1) * t + startCoords1;
     angle = (endAngle1 - startAngle1) * t + startAngle1;
     children.at(1)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
+    //child 2 green triangle
     coords = (endCoords2 - startCoords2) * t + startCoords2;
     angle = (endAngle2 - startAngle2) * t + startAngle2;
     children.at(2)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
+    //child 3 white triangle
     coords = (endCoords3 - startCoords3) * t + startCoords3;
     angle = (endAngle3 - startAngle3) * t + startAngle3;
     children.at(3)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
+    //child 4 oreange triangle
     coords = (endCoords4 - startCoords4) * t + startCoords4;
     angle = (endAngle4 - startAngle4) * t + startAngle4;
     children.at(4)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
+    //child 5 yellow square
     coords = (endCoords5 - startCoords5) * t + startCoords5;
     angle = (endAngle5 - startAngle5) * t + startAngle5;
     children.at(5)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
+    //child 6 purple parallelogram
     coords = (endCoords6 - startCoords6) * t + startCoords6;
     angle = (endAngle6 - startAngle6) * t + startAngle6;
     children.at(6)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
+    //root
     angle = (endAngleRoot - startAngleRoot) * t + startAngleRoot;
     root->setMatrix(glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f)));
 
@@ -277,7 +278,7 @@ int main(int argc, char *argv[]) {
     mgl::Engine &engine = mgl::Engine::getInstance();
     engine.setApp(new MyApp());
     engine.setOpenGL(4, 6);
-    engine.setWindow(800, 600, "Mesh Loader", 0, 1);
+    engine.setWindow(800, 800, "Mesh Loader", 0, 1);
     engine.init();
     engine.run();
     exit(EXIT_SUCCESS);

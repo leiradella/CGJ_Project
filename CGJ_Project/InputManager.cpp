@@ -111,11 +111,11 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 
 // Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
 const glm::mat4 perspectiveProjection =
-glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 100.0f);
+glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 1000.0f);
 
 // Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
 const glm::mat4 orthogonalProjection =
-glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 100.0f);
+glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 1.0f, 1000.0f);
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     switch (key) {
@@ -165,7 +165,7 @@ void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
     ratio = (1.0f * width) / height;
     const glm::mat4 proj =
-        glm::perspective(glm::radians(30.0f), ratio, 1.0f, 10.0f);
+        glm::perspective(glm::radians(30.0f), ratio, 1.0f, 1000.0f);
 
     activeCamera->setProjectionMatrix(proj);
 }
