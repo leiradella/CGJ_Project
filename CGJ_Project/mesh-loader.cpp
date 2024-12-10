@@ -105,7 +105,6 @@ void MyApp::createSceneGraph() {
     std::vector<SceneNode*> children = root->getChildren();
 
     //root->transform(glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-    root->setAngle(90.0f);
     root->setCoordinates(startCoordsRoot);
     root->setRotationAxis(glm::vec3(1.0f, 0.0f, 0.0f));
 
