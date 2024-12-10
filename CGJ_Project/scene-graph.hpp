@@ -64,16 +64,11 @@ public:
 	SceneNode(mgl::Mesh* m, glm::vec4 color, mgl::ShaderProgram* Shaders);
 	void addChild(SceneNode* child);
 	void draw(GLint ModelMatrixId, GLint ColorId);
-	std::vector<SceneNode*> getChildren();
+	std::vector<SceneNode*> getChildren() { return children; };
 
-	void setCoordinates(glm::vec3 coords);
-	glm::vec3 getCoordinates();
-	void setAngle(float angle);
-	float getAngle();
-	void setRotationAxis(glm::vec3 axis);
-	glm::vec3 getRotationAxis();
-	void setScale(float scale);
-	float getScale();
+	void setMatrix(glm::mat4 matrix);
+	void setScale(float scale) { this->ScaleMatrix = glm::scale(glm::vec3(scale, scale, 1.0f)); };
+	glm::mat4 getScale() { return ScaleMatrix; };
 
 protected:
 	SceneNode* parent;
@@ -83,8 +78,6 @@ protected:
 	mgl::ShaderProgram* Shaders;
 
 	//default atributes for each object
-	glm::vec3 coordinates = { 0.0f, 0.0f, 0.0f };
-	float angle = 0.0f;
-	glm::vec3 rotAxis = { 0.0f, 0.0f, 1.0f };
-	float scale = 1.0f;
+	glm::mat4 ModelMatrix = glm::mat4(1.0f);
+	glm::mat4 ScaleMatrix = glm::mat4(1.0f);
 };

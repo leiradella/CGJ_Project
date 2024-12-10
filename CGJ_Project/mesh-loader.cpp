@@ -104,47 +104,29 @@ void MyApp::createSceneGraph() {
 
     std::vector<SceneNode*> children = root->getChildren();
 
-    //root->transform(glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-    root->setCoordinates(startCoordsRoot);
-    root->setRotationAxis(glm::vec3(1.0f, 0.0f, 0.0f));
-
     //child 0
-    children.at(0)->setAngle(startAngle0);
-    children.at(0)->setCoordinates(startCoords0);
-    //children.at(0)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+    children.at(0)->setMatrix(glm::translate(startCoords0) * glm::rotate(glm::radians(startAngle0), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     //child 1
-    children.at(1)->setAngle(startAngle1);
-    children.at(1)->setScale(2);
-    children.at(1)->setCoordinates(startCoords1);
-    //children.at(1)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+    children.at(1)->setScale(2.0f);
+    children.at(1)->setMatrix(glm::translate(startCoords1) * glm::rotate(glm::radians(startAngle1), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     //child 2
     children.at(2)->setScale(2.0f);
-    children.at(2)->setAngle(startAngle2);
-    children.at(2)->setCoordinates(startCoords2);
-    //children.at(2)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+    children.at(2)->setMatrix(glm::translate(startCoords2) * glm::rotate(glm::radians(startAngle2), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     //child 3
-    children.at(3)->setAngle(startAngle3);
-    children.at(3)->setCoordinates(startCoords3);
-    //children.at(3)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+    children.at(3)->setMatrix(glm::translate(startCoords3) * glm::rotate(glm::radians(startAngle3), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     //child 4
     children.at(4)->setScale(sqrt(2));
-    children.at(4)->setAngle(startAngle4);
-    children.at(4)->setCoordinates(startCoords4);
-    //children.at(4)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+    children.at(4)->setMatrix(glm::translate(startCoords4) * glm::rotate(glm::radians(startAngle4), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     //child 5
-    children.at(5)->setAngle(startAngle5);
-    children.at(5)->setCoordinates(startCoords5);
-    //children.at(5)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+    children.at(5)->setMatrix(glm::translate(startCoords5) * glm::rotate(glm::radians(startAngle5), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     //child 6
-    children.at(6)->setAngle(startAngle6);
-    children.at(6)->setCoordinates(startCoords6);
-    //children.at(6)->setRotationAxis(glm::vec3(0.0f, 0.0f, 1.0f));
+    children.at(6)->setMatrix(glm::translate(startCoords6) * glm::rotate(glm::radians(startAngle6), glm::vec3(0.0f, 0.0f, 1.0f)));
 }
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
@@ -197,38 +179,34 @@ void MyApp::playAnimation(double deltaT) {
     //child 0
     coords = (endCoords0 - startCoords0) * t + startCoords0;
     angle = (endAngle0 - startAngle0) * t + startAngle0;
-    children.at(0)->setCoordinates(coords);
-    children.at(0)->setAngle(angle);
+    children.at(0)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     coords = (endCoords1 - startCoords1) * t + startCoords1;
     angle = (endAngle1 - startAngle1) * t + startAngle1;
-    children.at(1)->setCoordinates(coords);
-    children.at(1)->setAngle(angle);
+    children.at(1)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     coords = (endCoords2 - startCoords2) * t + startCoords2;
     angle = (endAngle2 - startAngle2) * t + startAngle2;
-    children.at(2)->setCoordinates(coords);
-    children.at(2)->setAngle(angle);
+    children.at(2)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     coords = (endCoords3 - startCoords3) * t + startCoords3;
     angle = (endAngle3 - startAngle3) * t + startAngle3;
-    children.at(3)->setCoordinates(coords);
-    children.at(3)->setAngle(angle);
+    children.at(3)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     coords = (endCoords4 - startCoords4) * t + startCoords4;
     angle = (endAngle4 - startAngle4) * t + startAngle4;
-    children.at(4)->setCoordinates(coords);
-    children.at(4)->setAngle(angle);
+    children.at(4)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     coords = (endCoords5 - startCoords5) * t + startCoords5;
     angle = (endAngle5 - startAngle5) * t + startAngle5;
-    children.at(5)->setCoordinates(coords);
-    children.at(5)->setAngle(angle);
+    children.at(5)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
 
     coords = (endCoords6 - startCoords6) * t + startCoords6;
     angle = (endAngle6 - startAngle6) * t + startAngle6;
-    children.at(6)->setCoordinates(coords);
-    children.at(6)->setAngle(angle);
+    children.at(6)->setMatrix(glm::translate(coords) * glm::rotate(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f)));
+
+    angle = (endAngleRoot - startAngleRoot) * t + startAngleRoot;
+    root->setMatrix(glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f)));
 
     if (inputManager->isRightArowPresed() && t < 1.0f) {
         t += step;

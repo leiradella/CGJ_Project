@@ -8,12 +8,9 @@ SceneNode::SceneNode(mgl::Mesh* mesh, glm::vec4 color, mgl::ShaderProgram* Shade
 }
 
 void SceneNode::draw(GLint ModelMatrixId, GLint ColorId) {
-	glm::mat4 saved = ModelMatrix;
-	ModelMatrix = glm::translate(coordinates) * glm::rotate(glm::radians(angle), rotAxis) * glm::scale(glm::vec3(scale, scale, 1.0f)) * ModelMatrix;
-	
 	if (mesh) {
 		Shaders->bind();
-		glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+		glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix * ScaleMatrix));
 		glUniform4fv(ColorId, 1, glm::value_ptr(color));
 		mesh->draw();
 		Shaders->unbind();
@@ -21,8 +18,6 @@ void SceneNode::draw(GLint ModelMatrixId, GLint ColorId) {
 	for (int i = 0; i < children.size(); i++) {
 		children[i]->draw(ModelMatrixId, ColorId);
 	}
-
-	ModelMatrix = saved;
 }
 
 void SceneNode::addChild(SceneNode* child) {
@@ -30,38 +25,10 @@ void SceneNode::addChild(SceneNode* child) {
 	child->parent = this;
 }
 
-std::vector<SceneNode*> SceneNode::getChildren() {
-	return children;
-}
-
-void SceneNode::setCoordinates(glm::vec3 coords) {
-	coordinates = coords;
-}
-
-glm::vec3 SceneNode::getCoordinates() {
-	return coordinates;
-}
-
-void SceneNode::setAngle(float angle) {
-	this->angle = angle;
-}
-
-float SceneNode::getAngle() {
-	return angle;
-}
-
-void SceneNode::setRotationAxis(glm::vec3 axis) {
-	rotAxis = axis;
-}
-
-glm::vec3 SceneNode::getRotationAxis() {
-	return rotAxis;
-}
-
-void SceneNode::setScale(float scale) {
-	this->scale = scale;
-}
-
-float SceneNode::getScale() {
-	return scale;
+void SceneNode::setMatrix(glm::mat4 matrix) {
+	this->ModelMatrix = matrix;
+	std::vector<SceneNode*> children = this->getChildren();
+	for (int i = 0; i < children.size(); i++) {
+		children[i]->ModelMatrix = matrix * children[i]->ModelMatrix;
+	}
 }
