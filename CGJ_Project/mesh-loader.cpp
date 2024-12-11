@@ -278,7 +278,7 @@ int main(int argc, char *argv[]) {
     mgl::Engine &engine = mgl::Engine::getInstance();
     engine.setApp(new MyApp());
     engine.setOpenGL(4, 6);
-    engine.setWindow(800, 600, "Mesh Loader", 0, 1);
+    engine.setWindow(800, 800, "Mesh Loader", 0, 1);
     engine.init();
     engine.run();
     exit(EXIT_SUCCESS);

@@ -110,11 +110,11 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 }
 
 // Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
-const glm::mat4 perspectiveProjection =
-glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 1000.0f);
+static glm::mat4 perspectiveProjection =
+glm::perspective(glm::radians(30.0f), 1.0f, 1.0f, 1000.0f);
 
 // Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
-const glm::mat4 orthogonalProjection =
+static glm::mat4 orthogonalProjection =
 glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 1.0f, 1000.0f);
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -164,10 +164,16 @@ void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height)
     if (height == 0) { height = 1; }
     glViewport(0, 0, width, height);
     ratio = (1.0f * width) / height;
-    const glm::mat4 proj =
-        glm::perspective(glm::radians(30.0f), ratio, 1.0f, 1000.0f);
-
-    activeCamera->setProjectionMatrix(proj);
+    const glm::mat4 newPerspectiveProjection = glm::perspective(glm::radians(30.0f), ratio, 1.0f, 1000.0f);
+    const glm::mat4 newOrthogonalProjection = glm::ortho(-width / 200.0f, width / 200.0f, -height / 200.0f, height / 200.0f, 1.0f, 1000.0f);
+    if (activeCamera->getProjectionMatrix() == perspectiveProjection) {
+        activeCamera->setProjectionMatrix(newPerspectiveProjection);
+    }
+    else {
+        activeCamera->setProjectionMatrix(newOrthogonalProjection);
+    }
+    orthogonalProjection = newOrthogonalProjection;
+    perspectiveProjection = newPerspectiveProjection;
 }
 
 void InputManager::setCamera(mgl::Camera* camera) {
@@ -180,7 +186,7 @@ void InputManager::setCamera(mgl::Camera* camera) {
     }
     else if (camera2 == nullptr) {
         camera2 = camera;
-        camera2->setViewMatrix(glm::vec3(5.0f, 3.0f, 5.0f), glm::vec3(0.0f, 3.0f, 3.0f),
+        camera2->setViewMatrix(glm::vec3(5.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
             camera2->getUp());
     }
     else {
