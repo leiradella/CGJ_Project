@@ -28,7 +28,7 @@ void InputManager::mouseButtonCallback(GLFWwindow* window, int button, int actio
 
 void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
     double deltaX, deltaY;
-    glm::vec3 axis(0.0f); 
+    glm::vec3 axis(0.0f);
     glm::vec3 eye = activeCamera->getEye();
     glm::vec3 center = activeCamera->getCenter();
     glm::vec3 up = activeCamera->getUp();
@@ -40,36 +40,27 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
         deltaX = cursorXPos - startCursorXPos;
         deltaY = cursorYPos - startCursorYPos;
 
-        // Compute the spherical coordinates
-        glm::vec3 viewDir = glm::normalize(eye - center);
 
-        // Calculate rotX and rotY from the current view direction
+        glm::vec3 forward = glm::normalize(center - eye);
+        float pitch = glm::asin(forward.y);
+        float yaw = glm::atan(-forward.x, -forward.z);
         radius = glm::length(eye - center);
-        rotX = glm::atan(viewDir.z, viewDir.x); // Angle in the XZ plane
-        rotY = glm::asin(viewDir.y);          // Vertical angle
 
-        // Update angles based on input deltas
-        rotX += (float)(deltaX) * 0.01f;
-        rotY += (float)(deltaY) * 0.01f;
+        //the rotation is contrary to the delta of the cursor, that's why we do -
+        const float sensitivity = 0.01f;
+        yaw -= deltaX * sensitivity;
+        pitch -= deltaY * sensitivity;
 
-        // Clamp rotY to avoid flipping at poles
-        float epsilon = 0.01f; // Small buffer to avoid gimbal lock
-        rotY = glm::clamp(rotY, -glm::pi<float>()/2 + epsilon, glm::pi<float>()/2 - epsilon);
+        //clamp pitch to prevent rotating over the poles
+        pitch = glm::clamp(pitch, glm::radians(-89.0f), glm::radians(89.0f));
+        glm::quat qPitch = glm::angleAxis(pitch, glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::quat qYaw = glm::angleAxis(yaw, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::quat orientation = glm::normalize(qYaw * qPitch);
 
-        // Convert spherical coordinates back to Cartesian coordinates
-        viewDir.x = radius * glm::cos(rotY) * glm::cos(rotX);
-        viewDir.y = radius * glm::sin(rotY);
-        viewDir.z = radius * glm::cos(rotY) * glm::sin(rotX);
+        forward = glm::rotate(orientation, glm::vec3(0.0f, 0.0f, -1.0f));
+        up = glm::rotate(orientation, glm::vec3(0.0f, 1.0f, 0.0f));
+        eye = -forward * radius;
 
-        // Update the eye position
-        eye = center + viewDir;
-
-        // Recompute the up vector
-        glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), viewDir));
-        up = glm::normalize(glm::cross(viewDir, right));
-        
-
-        //printf("x = %f, y = %f, z = %f\n", camCoords.x, camCoords.y, camCoords.z);
         activeCamera->setViewMatrix(eye, center, up);
 
         startCursorXPos = cursorXPos;
@@ -79,15 +70,18 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
 
 void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 
-    glm::vec3 viewDir = glm::normalize(activeCamera->getEye() - activeCamera->getCenter());
     glm::vec3 eye = activeCamera->getEye();
     glm::vec3 center = activeCamera->getCenter();
     glm::vec3 up = activeCamera->getUp();
 
+    //get the new radius based on the offset
     radius = glm::length(eye - center) - (float)(yoffset);
+
+    glm::vec3 viewDir = glm::normalize(eye - center);
     rotX = (float)(glm::atan(viewDir.z, viewDir.x));
     rotY = glm::asin(viewDir.y);
 
+    //prevent zooming too close
     if (radius < 3.0f) {
         radius = 3.0f;
         return;
@@ -96,16 +90,9 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
     viewDir.x = radius * glm::cos(rotY) * glm::cos(rotX);
     viewDir.y = radius * glm::sin(rotY);
     viewDir.z = radius * glm::cos(rotY) * glm::sin(rotX);
-
-    // Update the eye position
     eye = center + viewDir;
-
-    // Recompute the up vector
     glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), viewDir));
     up = glm::normalize(glm::cross(viewDir, right));
-
-
-    //printf("x = %f, y = %f, z = %f\n", camCoords.x, camCoords.y, camCoords.z);
     activeCamera->setViewMatrix(eye, center, up);
 }
 
@@ -119,12 +106,12 @@ glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 1.0f, 1000.0f);
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     switch (key) {
-    case GLFW_KEY_P:
+    case GLFW_KEY_P: //P swaps the type of projection
         if (action == GLFW_PRESS) {
             swapProjectionMatrix();
         }
         break;
-    case GLFW_KEY_C:
+    case GLFW_KEY_C: //C changes camera
         if (action == GLFW_PRESS) {
             if (activeCamera == camera1) {
                 setActiveCamera(camera2);
@@ -134,7 +121,7 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
             }
         }
         break;
-    case GLFW_KEY_LEFT:
+    case GLFW_KEY_LEFT: //this plays the animation towards the cube
         if (action == GLFW_RELEASE) {
             leftArrow = NOT_PRESSED;
         }
@@ -142,7 +129,7 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
             leftArrow = PRESSED;
         }
         break;
-    case GLFW_KEY_RIGHT:
+    case GLFW_KEY_RIGHT: //this plays the animation towards the shark
         if (action == GLFW_RELEASE) {
             rightArrow = NOT_PRESSED;
         }
@@ -163,7 +150,7 @@ void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height)
     //avoid division by 0
     if (height == 0) { height = 1; }
     glViewport(0, 0, width, height);
-    ratio = (1.0f * width) / height;
+    ratio = (float)(width) / height;
     const glm::mat4 newPerspectiveProjection = glm::perspective(glm::radians(30.0f), ratio, 1.0f, 1000.0f);
     const glm::mat4 newOrthogonalProjection = glm::ortho(-width / 200.0f, width / 200.0f, -height / 200.0f, height / 200.0f, 1.0f, 1000.0f);
     if (activeCamera->getProjectionMatrix() == perspectiveProjection) {
@@ -178,6 +165,7 @@ void InputManager::windowSizeCallback(GLFWwindow* window, int width, int height)
 
 void InputManager::setCamera(mgl::Camera* camera) {
 
+    //perspective is the default projection
     camera->setProjectionMatrix(perspectiveProjection);
     if (camera1 == nullptr) {
         camera1 = camera;
