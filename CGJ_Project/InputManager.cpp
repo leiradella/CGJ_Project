@@ -169,12 +169,12 @@ void InputManager::setCamera(mgl::Camera* camera) {
     camera->setProjectionMatrix(perspectiveProjection);
     if (camera1 == nullptr) {
         camera1 = camera;
-        camera1->setViewMatrix(glm::vec3(3.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+        camera1->setViewMatrix(glm::vec3(3.0f, 3.0f, 15.0f), glm::vec3(0.0f, 0.0f, 0.0f),
             camera1->getUp());
     }
     else if (camera2 == nullptr) {
         camera2 = camera;
-        camera2->setViewMatrix(glm::vec3(5.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+        camera2->setViewMatrix(glm::vec3(15.0f, 3.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f),
             camera2->getUp());
     }
     else {

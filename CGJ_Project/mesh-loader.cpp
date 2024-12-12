@@ -222,7 +222,6 @@ void MyApp::playAnimation(double deltaT) {
     else if (t < 0.0f) {
         t = 0.0f;
     }
-    printf("%f\n", t);
 }
 
 ////////////////////////////////////////////////////////////////////// CALLBACKS
