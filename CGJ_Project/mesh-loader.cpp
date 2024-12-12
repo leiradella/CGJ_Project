@@ -94,12 +94,12 @@ void MyApp::createSceneGraph() {
 
     root = new SceneNode(nullptr, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), Shaders);
 
-    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.9254901961f, 0.1098039216f, 0.1411764706f, 1.0f), Shaders));
-    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.2745098039f, 0.5882352941f, 0.9294117647f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.85f, 0.1098039216f, 0.1411764706f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.2745098039f, 0.5882352941f, 0.85f, 1.0f), Shaders));
     root->addChild(new SceneNode(triangleMesh, glm::vec4(0.4431372549f, 0.7490196078f, 0.2705882353f, 1.0f), Shaders));
     root->addChild(new SceneNode(triangleMesh, glm::vec4(0.8274509804f, 0.831372549f, 0.8392156863f, 1.0f), Shaders));
-    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.9568627451f, 0.5137254902f, 0.1215686275f, 1.0f), Shaders));
-    root->addChild(new SceneNode(squareMesh, glm::vec4(1.0f, 0.7607843137f, 0.05882352941f, 1.0f), Shaders));
+    root->addChild(new SceneNode(triangleMesh, glm::vec4(0.85f, 0.5137254902f, 0.1215686275f, 1.0f), Shaders));
+    root->addChild(new SceneNode(squareMesh, glm::vec4(0.85f, 0.7607843137f, 0.05882352941f, 1.0f), Shaders));
     root->addChild(new SceneNode(parallelogramMesh, glm::vec4(0.6862745098f, 0.5960784314f, 0.8274509804f, 1.0f), Shaders));
 
     std::vector<SceneNode*> children = root->getChildren();
