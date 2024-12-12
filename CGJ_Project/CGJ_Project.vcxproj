@@ -149,10 +149,6 @@ xcopy /y $(SolutionDir)libraries\assimp\bin\x64\assimp-vc143-mt.dll $(OutDir)</C
     <ClCompile Include="scene-graph.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="clip-fs.glsl" />
-    <None Include="clip-vs.glsl" />
-    <None Include="color-fs.glsl" />
-    <None Include="color-vs.glsl" />
     <None Include="cube-fs.glsl" />
     <None Include="cube-vs.glsl" />
   </ItemGroup>

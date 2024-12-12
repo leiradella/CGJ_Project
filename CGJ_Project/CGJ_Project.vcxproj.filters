@@ -42,20 +42,11 @@
     <ClCompile Include="scene-graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="clip-fs.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="clip-vs.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="color-fs.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="color-vs.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="cube-fs.glsl">
       <Filter>Resource Files</Filter>
     </None>
@@ -92,6 +83,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scene-graph.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
