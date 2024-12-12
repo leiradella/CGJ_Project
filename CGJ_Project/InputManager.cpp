@@ -41,9 +41,9 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
         deltaY = cursorYPos - startCursorYPos;
 
 
-        glm::vec3 forward = glm::normalize(center - eye);
-        float pitch = glm::asin(forward.y);
-        float yaw = glm::atan(-forward.x, -forward.z);
+        glm::vec3 view = glm::normalize(center - eye);
+        float pitch = glm::asin(view.y);
+        float yaw = glm::atan(-view.x, -view.z);
         radius = glm::length(eye - center);
 
         //the rotation is contrary to the delta of the cursor, that's why we do -
@@ -57,9 +57,13 @@ void InputManager::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
         glm::quat qYaw = glm::angleAxis(yaw, glm::vec3(0.0f, 1.0f, 0.0f));
         glm::quat orientation = glm::normalize(qYaw * qPitch);
 
-        forward = glm::rotate(orientation, glm::vec3(0.0f, 0.0f, -1.0f));
+        //(we use -z as it is the opengl convention)
+        view = radius * glm::rotate(orientation, glm::vec3(0.0f, 0.0f, -1.0f));
         up = glm::rotate(orientation, glm::vec3(0.0f, 1.0f, 0.0f));
-        eye = -forward * radius;
+        //view = center - eye
+        //view - center = -eye
+        //center - view = eye
+        eye = center - view;
 
         activeCamera->setViewMatrix(eye, center, up);
 
